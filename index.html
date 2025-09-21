@@ -298,6 +298,56 @@
             gap: 8px;
             cursor: pointer;
             padding: 8px 15px;
+        }
+
+        /* أنماط النرد بالنقاط */
+        .backgammon-dice {
+            text-align: center;
+            font-size: 2em;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dice-face {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 2px;
+            padding: 4px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .dice-dot {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .dice-empty {
+            width: 8px;
+            height: 8px;
+            margin: auto;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
             border-radius: 10px;
             transition: all 0.3s ease;
         }
@@ -794,9 +844,37 @@
 
         // تشغيل الأصوات
         function playSound(type) {
-            // محاكاة الأصوات بالاهتزاز على الأجهزة المدعومة
+            // محاكاة الأصوا        function playSound(type) {
+            // إنشاء أصوات واقعية باستخدام Web Audio API
+            if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                switch(type) {
+                    case 'dice_roll':
+                        // صوت رمي النرد الواقعي
+                        createDiceRollSound(audioContext);
+                        break;
+                    case 'move':
+                        createMoveSound(audioContext);
+                        break;
+                    case 'capture':
+                        createCaptureSound(audioContext);
+                        break;
+                    case 'select':
+                        createSelectSound(audioContext);
+                        break;
+                    case 'win':
+                        createWinSound(audioContext);
+                        break;
+                }
+            }
+            
+            // اهتزاز إضافي للتلفزيون الذكي
             if (navigator.vibrate) {
                 switch(type) {
+                    case 'dice_roll':
+                        navigator.vibrate([100, 50, 100, 50, 100]);
+                        break;
                     case 'move':
                         navigator.vibrate(50);
                         break;
@@ -811,6 +889,206 @@
                         break;
                 }
             }
+        }
+
+        function createDiceRollSound(audioContext) {
+            // صوت رمي النرد الواقعي - مزيج من الضوضاء والنقرات
+            const duration = 0.8;
+            const gainNode = audioContext.createGain();
+            
+            // ضوضاء بيضاء للصوت الأساسي
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.1;
+            }
+            
+            const noise = audioContext.createBufferSource();
+            noise.buffer = buffer;
+            
+            // فلتر لجعل الصوت أكثر واقعية
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 800;
+            filter.Q.value = 5;
+            
+            // مغلف الصوت
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            noise.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            noise.start(audioContext.currentTime);
+            noise.stop(audioContext.currentTime + duration);
+            
+            // إضافة نقرات للواقعية
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createClickSound(audioContext), i * 200);
+            }
+        }
+
+        function createClickSound(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function createMoveSound(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.frequency.value = 440;
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        function createCaptureSound(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(400, audioContext.currentTime + 0.3);
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function createSelectSound(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.frequency.value = 600;
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function createWinSound(audioContext) {
+            // لحن انتصار بسيط
+            const notes = [523, 659, 784, 1047]; // C, E, G, C
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.frequency.value = freq;
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                }, index * 200);
+            });
+        }
+
+        function rollBackgammonDice() {
+            // تشغيل صوت رمي النرد الواقعي
+            playSound('dice_roll');
+            
+            // إضافة تأثير بصري للرمي
+            const diceDisplay = document.getElementById('backgammon-dice');
+            diceDisplay.innerHTML = '🎲 جاري الرمي...';
+            diceDisplay.style.animation = 'shake 0.8s ease-in-out';
+            
+            setTimeout(() => {
+                const dice1 = Math.floor(Math.random() * 6) + 1;
+                const dice2 = Math.floor(Math.random() * 6) + 1;
+                
+                backgammonEngine.setDice([dice1, dice2]);
+                
+                // عرض النرد بالنقاط الحقيقية
+                diceDisplay.innerHTML = createDiceHTML(dice1) + ' ' + createDiceHTML(dice2);
+                diceDisplay.style.animation = '';
+                
+                updateBackgammonHints();
+            }, 800);
+        }
+
+        function createDiceHTML(value) {
+            const dicePatterns = {
+                1: [
+                    [0, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 0]
+                ],
+                2: [
+                    [1, 0, 0],
+                    [0, 0, 0],
+                    [0, 0, 1]
+                ],
+                3: [
+                    [1, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 1]
+                ],
+                4: [
+                    [1, 0, 1],
+                    [0, 0, 0],
+                    [1, 0, 1]
+                ],
+                5: [
+                    [1, 0, 1],
+                    [0, 1, 0],
+                    [1, 0, 1]
+                ],
+                6: [
+                    [1, 0, 1],
+                    [1, 0, 1],
+                    [1, 0, 1]
+                ]
+            };
+
+            const pattern = dicePatterns[value];
+            let diceHTML = '<div class="dice-face">';
+            
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    if (pattern[row][col] === 1) {
+                        diceHTML += '<div class="dice-dot"></div>';
+                    } else {
+                        diceHTML += '<div class="dice-empty"></div>';
+                    }
+                }
+            }
+            
+            diceHTML += '</div>';
+            return diceHTML;
         }
 
         // === محرك الشطرنج المبسط ===
