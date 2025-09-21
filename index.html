@@ -460,11 +460,23 @@
                 <button onclick="resetChess()" style="background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔄 لعبة جديدة</button>
                 <button onclick="toggleChessMode()" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🤖 وضع اللعب</button>
                 <button onclick="toggleChessLevel()" style="background: linear-gradient(45deg, #9C27B0, #673AB7); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">⚡ المستوى</button>
+                <button onclick="chessTutorial.showTutorial()" style="background: linear-gradient(45deg, #FFD700, #FFA000); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">📚 الدليل التعليمي</button>
                 <button onclick="toggleSound()" style="background: linear-gradient(45deg, #FFA726, #FF7043); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔊 الصوت</button>
             </div>
             <div class="chess-board" id="chess-board"></div>
             <div style="text-align: center; margin-top: 20px;">
                 <p id="game-status" style="font-size: 1.2rem; font-weight: 600;">دور الأبيض</p>
+            </div>
+
+            <!-- منطقة النصائح والاقتراحات -->
+            <div id="chess-hints-area" style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; min-height: 100px;">
+                <h3 style="margin: 0 0 15px 0; color: #FFD700; font-size: 1.2rem; text-align: center;">💡 النصائح والاقتراحات</h3>
+                <div id="chess-current-hint" style="margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; text-align: center; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <p style="margin: 0; color: #4ECDC4;">اختر قطعة لرؤية النصائح والحركات المقترحة</p>
+                </div>
+                <div id="chess-suggestions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <!-- الاقتراحات ستظهر هنا -->
+                </div>
             </div>
         </div>
 
@@ -479,6 +491,7 @@
                 <button onclick="rollDiceBackgammon()" id="roll-dice-btn" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🎲 رمي النرد</button>
                 <button onclick="toggleBackgammonMode()" style="background: linear-gradient(45deg, #FFA726, #FF7043); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🤖 وضع اللعب</button>
                 <button onclick="toggleBackgammonLevel()" style="background: linear-gradient(45deg, #9C27B0, #673AB7); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">⚡ المستوى</button>
+                <button onclick="backgammonTutorial.showTutorial()" style="background: linear-gradient(45deg, #FFD700, #FFA000); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">📚 الدليل التعليمي</button>
             </div>
 
             <!-- معلومات اللعبة -->
@@ -524,6 +537,17 @@
             <div style="text-align: center; margin-top: 20px;">
                 <p id="backgammon-status" style="font-size: 1.2rem; font-weight: 600;">اضغط على "رمي النرد" لبدء اللعب</p>
             </div>
+
+            <!-- منطقة النصائح والاقتراحات -->
+            <div id="backgammon-hints-area" style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; min-height: 100px;">
+                <h3 style="margin: 0 0 15px 0; color: #FFD700; font-size: 1.2rem; text-align: center;">🎲 النصائح والاقتراحات</h3>
+                <div id="backgammon-current-hint" style="margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; text-align: center; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <p style="margin: 0; color: #F0D9B5;">ارم النرد واختر قطعة لرؤية النصائح والحركات المقترحة</p>
+                </div>
+                <div id="backgammon-suggestions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <!-- الاقتراحات ستظهر هنا -->
+                </div>
+            </div>
         </div>
 
         <div id="other-games" class="game-area">
@@ -544,6 +568,8 @@
     <!-- تحميل محركات الألعاب المتقدمة -->
     <script src="chess-advanced.js"></script>
     <script src="backgammon-advanced.js"></script>
+    <script src="chess-tutorial.js"></script>
+    <script src="backgammon-tutorial.js"></script>
     
     <script>
         // متغيرات اللعبة
@@ -823,6 +849,7 @@
                                 if (aiMove) {
                                     playSound('move');
                                     renderChessBoard();
+                                    updateChessHints();
                                 }
                             }, 500);
                         }
@@ -837,6 +864,56 @@
             }
             
             renderChessBoard();
+            updateChessHints();
+        }
+
+        function updateChessHints() {
+            const hintElement = document.getElementById('chess-current-hint');
+            const suggestionsElement = document.getElementById('chess-suggestions');
+            
+            if (!hintElement || !suggestionsElement) return;
+            
+            // عرض النصيحة الحالية
+            const hint = chessTutorial.getSmartHint(chessEngine, chessEngine.selectedSquare);
+            if (hint) {
+                hintElement.innerHTML = `<p style="margin: 0; color: #4ECDC4;">${hint}</p>`;
+            } else {
+                hintElement.innerHTML = `<p style="margin: 0; color: #4ECDC4;">اختر قطعة لرؤية النصائح والحركات المقترحة</p>`;
+            }
+            
+            // عرض الاقتراحات
+            if (chessEngine.selectedSquare) {
+                const suggestions = chessTutorial.getSuggestedMoves(chessEngine, chessEngine.selectedSquare);
+                
+                suggestionsElement.innerHTML = suggestions.map(suggestion => `
+                    <div onclick="makeChessSuggestedMove(${suggestion.move.row}, ${suggestion.move.col})" style="
+                        background: rgba(255,255,255,0.1);
+                        border-radius: 10px;
+                        padding: 10px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        border: 1px solid rgba(255,255,255,0.2);
+                    " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        <div style="color: #FFD700; font-weight: 600; margin-bottom: 5px;">
+                            ${String.fromCharCode(97 + chessEngine.selectedSquare[1])}${8 - chessEngine.selectedSquare[0]} → ${String.fromCharCode(97 + suggestion.move.col)}${8 - suggestion.move.row}
+                        </div>
+                        <div style="color: #4ECDC4; font-size: 0.9rem;">
+                            ${suggestion.reason}
+                        </div>
+                        <div style="color: #FFA726; font-size: 0.8rem; margin-top: 5px;">
+                            أولوية: ${suggestion.priority}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                suggestionsElement.innerHTML = '';
+            }
+        }
+
+        function makeChessSuggestedMove(toRow, toCol) {
+            if (chessEngine.selectedSquare) {
+                handleChessSquareClick(toRow, toCol);
+            }
         }
 
         function updateChessStatus() {
@@ -869,6 +946,7 @@
         function resetChess() {
             chessEngine.reset();
             renderChessBoard();
+            updateChessHints();
             playSound('select');
         }
 
@@ -973,6 +1051,7 @@
                 backgammonEngine.makeMove(move.from, move.to, move.dice);
                 playSound('move');
                 renderBackgammonBoard();
+                updateBackgammonHints();
                 
                 // إذا انتهت الحركات، تحقق من دور الكمبيوتر
                 if (backgammonEngine.availableMoves.length === 0 && 
@@ -983,15 +1062,70 @@
                         if (aiMoves && aiMoves.length > 0) {
                             playSound('move');
                             renderBackgammonBoard();
+                            updateBackgammonHints();
                         }
                     }, 1000);
                 }
             } else {
-                // عدة حركات ممكنة - اختر الأولى (يمكن تحسينها)
-                const move = possibleMoves[0];
-                backgammonEngine.makeMove(move.from, move.to, move.dice);
-                playSound('move');
-                renderBackgammonBoard();
+                // عدة حركات ممكنة - عرض الاقتراحات
+                showBackgammonSuggestions(pointNumber, possibleMoves);
+            }
+        }
+
+        function showBackgammonSuggestions(pointNumber, possibleMoves) {
+            const suggestions = backgammonTutorial.getSuggestedMoves(
+                backgammonEngine, 
+                pointNumber, 
+                backgammonEngine.availableMoves
+            );
+            
+            const suggestionsElement = document.getElementById('backgammon-suggestions');
+            suggestionsElement.innerHTML = suggestions.map(suggestion => `
+                <div onclick="makeBackgammonSuggestedMove(${suggestion.from}, ${suggestion.to}, ${suggestion.dice})" style="
+                    background: rgba(255,255,255,0.1);
+                    border-radius: 10px;
+                    padding: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    border: 1px solid rgba(255,255,255,0.2);
+                " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    <div style="color: #FFD700; font-weight: 600; margin-bottom: 5px;">
+                        النقطة ${suggestion.from} → النقطة ${suggestion.to}
+                    </div>
+                    <div style="color: #F0D9B5; font-size: 0.9rem;">
+                        ${suggestion.reason}
+                    </div>
+                    <div style="color: #FFA726; font-size: 0.8rem; margin-top: 5px;">
+                        النرد: ${suggestion.dice} | أولوية: ${suggestion.priority}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function makeBackgammonSuggestedMove(from, to, dice) {
+            backgammonEngine.makeMove(from, to, dice);
+            playSound('move');
+            renderBackgammonBoard();
+            updateBackgammonHints();
+        }
+
+        function updateBackgammonHints() {
+            const hintElement = document.getElementById('backgammon-current-hint');
+            const suggestionsElement = document.getElementById('backgammon-suggestions');
+            
+            if (!hintElement || !suggestionsElement) return;
+            
+            // عرض النصيحة الحالية
+            const hint = backgammonTutorial.getSmartHint(backgammonEngine, backgammonEngine.availableMoves);
+            if (hint) {
+                hintElement.innerHTML = `<p style="margin: 0; color: #F0D9B5;">${hint}</p>`;
+            } else {
+                hintElement.innerHTML = `<p style="margin: 0; color: #F0D9B5;">ارم النرد واختر قطعة لرؤية النصائح والحركات المقترحة</p>`;
+            }
+            
+            // مسح الاقتراحات إذا لم تعد هناك حركات متاحة
+            if (backgammonEngine.availableMoves.length === 0) {
+                suggestionsElement.innerHTML = '';
             }
         }
 
@@ -1005,6 +1139,7 @@
             document.getElementById('backgammon-dice').textContent = `🎲 ${dice[0]} - ${dice[1]} 🎲`;
             playSound('move');
             renderBackgammonBoard();
+            updateBackgammonHints();
         }
 
         function updateBackgammonStatus() {
@@ -1029,6 +1164,7 @@
             backgammonEngine.reset();
             document.getElementById('backgammon-dice').textContent = '🎲 🎲';
             renderBackgammonBoard();
+            updateBackgammonHints();
             playSound('select');
         }
 
