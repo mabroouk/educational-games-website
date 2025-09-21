@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 موقع الألعاب التعليمي 🎯</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .game-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+        }
+
+        .game-card.focused {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px #FFD700;
+            border: 2px solid #FFD700;
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .game-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+
+        .game-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .play-button {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .features {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #FFD700;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .controls {
+            background: linear-gradient(145deg, rgba(0,255,0,0.1), rgba(0,200,0,0.05));
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .controls h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #90EE90;
+        }
+
+        .control-keys {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .key {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: 50px;
+        }
+
+        .game-area {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-area.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .back-button {
+            background: linear-gradient(45deg, #FF4757, #FF3838);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            gap: 2px;
+            margin: 20px auto;
+            border: 4px solid #8B4513;
+            border-radius: 10px;
+            background: #8B4513;
+        }
+
+        .chess-square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chess-square.light {
+            background: #F0D9B5;
+            color: #333;
+        }
+
+        .chess-square.dark {
+            background: #B58863;
+            color: #333;
+        }
+
+        .chess-square.selected {
+            box-shadow: inset 0 0 0 3px #FFD700;
+        }
+
+        .chess-square.possible-move {
+            box-shadow: inset 0 0 0 3px #FF4757;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chess-board {
+                grid-template-columns: repeat(8, 40px);
+                grid-template-rows: repeat(8, 40px);
+            }
+            
+            .chess-square {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎮 موقع الألعاب التعليمي 🎯</h1>
+            <p>ألعاب ذكية وممتعة للكبار والصغار - مع دعم كامل للريموت كنترول</p>
+        </header>
+
+        <div id="main-menu">
+            <div class="games-grid">
+                <div class="game-card" data-game="chess" tabindex="0">
+                    <span class="game-icon">♔</span>
+                    <h3 class="game-title">الشطرنج</h3>
+                    <p class="game-description">لعبة الملوك والاستراتيجية مع ذكاء اصطناعي متقدم ودروس تعليمية شاملة</p>
+                    <button class="play-button">ابدأ اللعب</button>
+                </div>
+
+                <div class="game-card" data-game="backgammon" tabindex="0">
+                    <span class="game-icon">⚫</span>
+                    <h3 class="game-title">الطاولة</h3>
+                    <p class="game-description">اللعبة الشرقية الأصيلة مع محاكاة واقعية للنرد وذكاء اصطناعي ذكي</p>
+                    <button class="play-button">ابدأ اللعب</button>
+                </div>
+
+                <div class="game-card" data-game="domino" tabindex="0">
+                    <span class="game-icon">⚀</span>
+                    <h3 class="game-title">الدومينو</h3>
+                    <p class="game-description">لعبة التفكير والتخطيط مع 28 قطعة كاملة وذكاء اصطناعي متطور</p>
+                    <button class="play-button">ابدأ اللعب</button>
+                </div>
+
+                <div class="game-card" data-game="spaceshooter" tabindex="0">
+                    <span class="game-icon">🚀</span>
+                    <h3 class="game-title">حرب النجوم</h3>
+                    <p class="game-description">مغامرة فضائية مثيرة مناسبة للأطفال من 3 سنوات مع رسوميات جميلة</p>
+                    <button class="play-button">ابدأ المغامرة</button>
+                </div>
+
+                <div class="game-card" data-game="carracing" tabindex="0">
+                    <span class="game-icon">🏎️</span>
+                    <h3 class="game-title">سباق السيارات</h3>
+                    <p class="game-description">سرعة وإثارة على الطريق مع فيزياء واقعية وسهولة في التحكم</p>
+                    <button class="play-button">ابدأ السباق</button>
+                </div>
+
+                <div class="game-card" data-game="coming-soon" tabindex="0">
+                    <span class="game-icon">🎲</span>
+                    <h3 class="game-title">المزيد قريباً</h3>
+                    <p class="game-description">نعمل على إضافة المزيد من الألعاب التعليمية والممتعة</p>
+                    <button class="play-button" disabled>قريباً</button>
+                </div>
+            </div>
+
+            <div class="features">
+                <h2>✨ ميزات خاصة ✨</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <span class="feature-icon">📺</span>
+                        <h4>دعم التلفزيون الذكي</h4>
+                        <p>العب بريموت التلفزيون بسهولة تامة</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🤖</span>
+                        <h4>ذكاء اصطناعي متقدم</h4>
+                        <p>خصم ذكي يتحدى مهاراتك</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔊</span>
+                        <h4>أصوات واقعية</h4>
+                        <p>تأثيرات صوتية مميزة لكل لعبة</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📚</span>
+                        <h4>دروس تعليمية</h4>
+                        <p>تعلم من الصفر حتى الاحتراف</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <h3>🎮 كيفية التحكم بالريموت</h3>
+                <div class="control-keys">
+                    <span class="key">⬅️➡️⬆️⬇️ الأسهم للتنقل</span>
+                    <span class="key">✅ OK للاختيار</span>
+                    <span class="key">🔙 Back للرجوع</span>
+                    <span class="key">🏠 Home للقائمة الرئيسية</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- منطقة الألعاب -->
+        <div id="chess-game" class="game-area">
+            <button class="back-button" onclick="showMainMenu()">🔙 العودة للقائمة الرئيسية</button>
+            <h2 style="text-align: center; margin-bottom: 20px;">♔ لعبة الشطرنج ♛</h2>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button onclick="resetChess()" style="background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔄 لعبة جديدة</button>
+                <button onclick="toggleSound()" style="background: linear-gradient(45deg, #FFA726, #FF7043); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔊 الصوت</button>
+            </div>
+            <div class="chess-board" id="chess-board"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <p id="game-status" style="font-size: 1.2rem; font-weight: 600;">دور الأبيض</p>
+            </div>
+        </div>
+
+        <div id="other-games" class="game-area">
+            <button class="back-button" onclick="showMainMenu()">🔙 العودة للقائمة الرئيسية</button>
+            <h2 style="text-align: center; margin-bottom: 20px;" id="current-game-title">اللعبة</h2>
+            <div style="text-align: center; padding: 50px;">
+                <p style="font-size: 1.5rem; margin-bottom: 30px;">🚧 هذه اللعبة قيد التطوير 🚧</p>
+                <p style="font-size: 1.2rem; opacity: 0.8;">سيتم إضافة المزيد من الألعاب قريباً مع جميع الميزات المتقدمة</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2025 - برمجة وتطوير: محاسب أحمد مبروك</p>
+            <p style="margin-top: 10px; opacity: 0.8;">موقع ألعاب تعليمي احترافي مع دعم كامل للتلفزيون الذكي والذكاء الاصطناعي</p>
+        </footer>
+    </div>
+
+    <script>
+        // متغيرات اللعبة
+        let currentFocus = 0;
+        let gameCards = [];
+        let isRemoteMode = false;
+        let soundEnabled = true;
+        
+        // متغيرات الشطرنج
+        let chessBoard = [];
+        let selectedSquare = null;
+        let isWhiteTurn = true;
+        let gameStatus = 'playing';
+
+        // تهيئة اللعبة
+        document.addEventListener('DOMContentLoaded', function() {
+            gameCards = document.querySelectorAll('.game-card');
+            setupRemoteControl();
+            initializeChess();
+            
+            // إضافة مستمعي الأحداث للبطاقات
+            gameCards.forEach((card, index) => {
+                card.addEventListener('click', () => selectGame(card.dataset.game));
+                card.addEventListener('focus', () => setFocus(index));
+            });
+        });
+
+        // إعداد التحكم بالريموت
+        function setupRemoteControl() {
+            // كشف التلفزيون الذكي
+            const userAgent = navigator.userAgent.toLowerCase();
+            isRemoteMode = userAgent.includes('smart-tv') || 
+                          userAgent.includes('tizen') || 
+                          userAgent.includes('webos') || 
+                          userAgent.includes('roku') ||
+                          window.innerWidth >= 1920;
+
+            document.addEventListener('keydown', handleKeyPress);
+            
+            // تفعيل وضع الريموت عند الضغط على أي سهم
+            if (!isRemoteMode) {
+                document.addEventListener('keydown', function enableRemote(e) {
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                        isRemoteMode = true;
+                        setFocus(0);
+                        document.removeEventListener('keydown', enableRemote);
+                    }
+                }, { once: true });
+            } else {
+                setFocus(0);
+            }
+        }
+
+        // التعامل مع ضغط المفاتيح
+        function handleKeyPress(event) {
+            if (!isRemoteMode) return;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                    event.preventDefault();
+                    if (document.getElementById('main-menu').style.display !== 'none') {
+                        moveFocus(-2); // صعود صفين في الشبكة
+                    }
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    if (document.getElementById('main-menu').style.display !== 'none') {
+                        moveFocus(2); // نزول صفين في الشبكة
+                    }
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    if (document.getElementById('main-menu').style.display !== 'none') {
+                        moveFocus(-1);
+                    }
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    if (document.getElementById('main-menu').style.display !== 'none') {
+                        moveFocus(1);
+                    }
+                    break;
+                case 'Enter':
+                case ' ':
+                    event.preventDefault();
+                    if (document.getElementById('main-menu').style.display !== 'none') {
+                        const focusedCard = gameCards[currentFocus];
+                        if (focusedCard) {
+                            selectGame(focusedCard.dataset.game);
+                        }
+                    }
+                    break;
+                case 'Escape':
+                case 'Backspace':
+                    event.preventDefault();
+                    showMainMenu();
+                    break;
+            }
+        }
+
+        // تحريك التركيز
+        function moveFocus(direction) {
+            const newFocus = currentFocus + direction;
+            if (newFocus >= 0 && newFocus < gameCards.length) {
+                setFocus(newFocus);
+            }
+        }
+
+        // تعيين التركيز
+        function setFocus(index) {
+            // إزالة التركيز من البطاقة الحالية
+            gameCards.forEach(card => card.classList.remove('focused'));
+            
+            // تعيين التركيز الجديد
+            currentFocus = index;
+            if (gameCards[currentFocus]) {
+                gameCards[currentFocus].classList.add('focused');
+                gameCards[currentFocus].focus();
+            }
+        }
+
+        // اختيار لعبة
+        function selectGame(gameType) {
+            playSound('select');
+            
+            document.getElementById('main-menu').style.display = 'none';
+            
+            if (gameType === 'chess') {
+                document.getElementById('chess-game').classList.add('active');
+                resetChess();
+            } else if (gameType === 'coming-soon') {
+                alert('🎮 هذه اللعبة قيد التطوير وستكون متاحة قريباً!');
+                showMainMenu();
+            } else {
+                document.getElementById('current-game-title').textContent = getGameTitle(gameType);
+                document.getElementById('other-games').classList.add('active');
+            }
+        }
+
+        // الحصول على عنوان اللعبة
+        function getGameTitle(gameType) {
+            const titles = {
+                'backgammon': '⚫ الطاولة ⚪',
+                'domino': '⚀ الدومينو ⚅',
+                'spaceshooter': '🚀 حرب النجوم 🌟',
+                'carracing': '🏎️ سباق السيارات 🏁'
+            };
+            return titles[gameType] || 'اللعبة';
+        }
+
+        // إظهار القائمة الرئيسية
+        function showMainMenu() {
+            document.querySelectorAll('.game-area').forEach(area => {
+                area.classList.remove('active');
+            });
+            document.getElementById('main-menu').style.display = 'block';
+            
+            if (isRemoteMode) {
+                setFocus(0);
+            }
+        }
+
+        // تشغيل الصوت
+        function playSound(type) {
+            if (!soundEnabled) return;
+            
+            // محاكاة الأصوات بـ Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch (type) {
+                case 'select':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    break;
+                case 'move':
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    break;
+                case 'capture':
+                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                    break;
+            }
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // تبديل الصوت
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            playSound('select');
+            alert(soundEnabled ? '🔊 تم تشغيل الصوت' : '🔇 تم إيقاف الصوت');
+        }
+
+        // === وظائف الشطرنج ===
+
+        // تهيئة الشطرنج
+        function initializeChess() {
+            chessBoard = createInitialBoard();
+            renderChessBoard();
+        }
+
+        // إنشاء اللوحة الابتدائية
+        function createInitialBoard() {
+            const board = Array(8).fill().map(() => Array(8).fill(''));
+            
+            // القطع السوداء
+            board[0] = ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'];
+            board[1] = ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'];
+            
+            // القطع البيضاء
+            board[6] = ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'];
+            board[7] = ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'];
+            
+            return board;
+        }
+
+        // رسم لوحة الشطرنج
+        function renderChessBoard() {
+            const boardElement = document.getElementById('chess-board');
+            boardElement.innerHTML = '';
+            
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.className = `chess-square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                    square.textContent = chessBoard[row][col];
+                    square.onclick = () => handleSquareClick(row, col);
+                    
+                    if (selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col) {
+                        square.classList.add('selected');
+                    }
+                    
+                    boardElement.appendChild(square);
+                }
+            }
+            
+            updateGameStatus();
+        }
+
+        // التعامل مع النقر على المربع
+        function handleSquareClick(row, col) {
+            const piece = chessBoard[row][col];
+            
+            if (selectedSquare) {
+                const [selectedRow, selectedCol] = selectedSquare;
+                
+                if (row === selectedRow && col === selectedCol) {
+                    // إلغاء التحديد
+                    selectedSquare = null;
+                } else if (isValidMove(selectedRow, selectedCol, row, col)) {
+                    // تنفيذ الحركة
+                    makeMove(selectedRow, selectedCol, row, col);
+                } else if (piece && isPieceOwnedByCurrentPlayer(piece)) {
+                    // اختيار قطعة جديدة
+                    selectedSquare = [row, col];
+                } else {
+                    selectedSquare = null;
+                }
+            } else if (piece && isPieceOwnedByCurrentPlayer(piece)) {
+                // اختيار قطعة
+                selectedSquare = [row, col];
+            }
+            
+            renderChessBoard();
+        }
+
+        // التحقق من ملكية القطعة
+        function isPieceOwnedByCurrentPlayer(piece) {
+            const isWhitePiece = piece.charCodeAt(0) >= 9812 && piece.charCodeAt(0) <= 9817;
+            return isWhiteTurn === isWhitePiece;
+        }
+
+        // التحقق من صحة الحركة (مبسط)
+        function isValidMove(fromRow, fromCol, toRow, toCol) {
+            // تحقق مبسط - يمكن تحسينه
+            const piece = chessBoard[fromRow][fromCol];
+            const targetPiece = chessBoard[toRow][toCol];
+            
+            // لا يمكن أكل قطعة من نفس اللون
+            if (targetPiece && isPieceOwnedByCurrentPlayer(targetPiece)) {
+                return false;
+            }
+            
+            // تحقق أساسي للحركة
+            const rowDiff = Math.abs(toRow - fromRow);
+            const colDiff = Math.abs(toCol - fromCol);
+            
+            // البيدق
+            if (piece === '♙' || piece === '♟') {
+                const direction = piece === '♙' ? -1 : 1;
+                const startRow = piece === '♙' ? 6 : 1;
+                
+                if (colDiff === 0) {
+                    // حركة للأمام
+                    if (toRow === fromRow + direction && !targetPiece) return true;
+                    if (fromRow === startRow && toRow === fromRow + 2 * direction && !targetPiece) return true;
+                } else if (colDiff === 1 && rowDiff === 1) {
+                    // أكل قطري
+                    return targetPiece && !isPieceOwnedByCurrentPlayer(targetPiece);
+                }
+                return false;
+            }
+            
+            // الرخ
+            if (piece === '♖' || piece === '♜') {
+                return (rowDiff === 0 || colDiff === 0) && isPathClear(fromRow, fromCol, toRow, toCol);
+            }
+            
+            // الفيل
+            if (piece === '♗' || piece === '♝') {
+                return rowDiff === colDiff && isPathClear(fromRow, fromCol, toRow, toCol);
+            }
+            
+            // الملكة
+            if (piece === '♕' || piece === '♛') {
+                return (rowDiff === 0 || colDiff === 0 || rowDiff === colDiff) && isPathClear(fromRow, fromCol, toRow, toCol);
+            }
+            
+            // الحصان
+            if (piece === '♘' || piece === '♞') {
+                return (rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2);
+            }
+            
+            // الملك
+            if (piece === '♔' || piece === '♚') {
+                return rowDiff <= 1 && colDiff <= 1;
+            }
+            
+            return false;
+        }
+
+        // التحقق من خلو المسار
+        function isPathClear(fromRow, fromCol, toRow, toCol) {
+            const rowStep = toRow > fromRow ? 1 : toRow < fromRow ? -1 : 0;
+            const colStep = toCol > fromCol ? 1 : toCol < fromCol ? -1 : 0;
+            
+            let currentRow = fromRow + rowStep;
+            let currentCol = fromCol + colStep;
+            
+            while (currentRow !== toRow || currentCol !== toCol) {
+                if (chessBoard[currentRow][currentCol] !== '') {
+                    return false;
+                }
+                currentRow += rowStep;
+                currentCol += colStep;
+            }
+            
+            return true;
+        }
+
+        // تنفيذ الحركة
+        function makeMove(fromRow, fromCol, toRow, toCol) {
+            const piece = chessBoard[fromRow][fromCol];
+            const capturedPiece = chessBoard[toRow][toCol];
+            
+            chessBoard[toRow][toCol] = piece;
+            chessBoard[fromRow][fromCol] = '';
+            
+            selectedSquare = null;
+            isWhiteTurn = !isWhiteTurn;
+            
+            if (capturedPiece) {
+                playSound('capture');
+            } else {
+                playSound('move');
+            }
+        }
+
+        // تحديث حالة اللعبة
+        function updateGameStatus() {
+            const statusElement = document.getElementById('game-status');
+            statusElement.textContent = isWhiteTurn ? 'دور الأبيض' : 'دور الأسود';
+        }
+
+        // إعادة تشغيل الشطرنج
+        function resetChess() {
+            chessBoard = createInitialBoard();
+            selectedSquare = null;
+            isWhiteTurn = true;
+            gameStatus = 'playing';
+            renderChessBoard();
+            playSound('select');
+        }
+    </script>
+</body>
+</html>
