@@ -281,6 +281,56 @@
             to { opacity: 1; }
         }
 
+        .backgammon-point {
+            border-radius: 0 0 50px 50px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 5px;
+            min-height: 200px;
+        }
+
+        .backgammon-point:nth-child(n+14) {
+            border-radius: 50px 50px 0 0;
+            justify-content: flex-end;
+        }
+
+        .backgammon-point.selected {
+            box-shadow: inset 0 0 0 3px #FFD700;
+        }
+
+        .backgammon-point.possible-move {
+            box-shadow: inset 0 0 0 3px #FF4757;
+        }
+
+        .backgammon-piece {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            border: 2px solid rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .backgammon-piece.white {
+            background: linear-gradient(45deg, #FFFFFF, #F0F0F0);
+            color: #333;
+        }
+
+        .backgammon-piece.black {
+            background: linear-gradient(45deg, #333333, #111111);
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -297,6 +347,18 @@
             
             .chess-square {
                 font-size: 1.5rem;
+            }
+
+            #backgammon-board {
+                width: 100% !important;
+                max-width: 600px;
+                height: 400px !important;
+            }
+            
+            .backgammon-piece {
+                width: 20px;
+                height: 20px;
+                font-size: 0.6rem;
             }
         }
     </style>
@@ -396,11 +458,71 @@
             <h2 style="text-align: center; margin-bottom: 20px;">♔ لعبة الشطرنج ♛</h2>
             <div style="text-align: center; margin-bottom: 20px;">
                 <button onclick="resetChess()" style="background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔄 لعبة جديدة</button>
+                <button onclick="toggleChessMode()" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🤖 وضع اللعب</button>
+                <button onclick="toggleChessLevel()" style="background: linear-gradient(45deg, #9C27B0, #673AB7); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">⚡ المستوى</button>
                 <button onclick="toggleSound()" style="background: linear-gradient(45deg, #FFA726, #FF7043); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔊 الصوت</button>
             </div>
             <div class="chess-board" id="chess-board"></div>
             <div style="text-align: center; margin-top: 20px;">
                 <p id="game-status" style="font-size: 1.2rem; font-weight: 600;">دور الأبيض</p>
+            </div>
+        </div>
+
+        <!-- واجهة لعبة الطاولة -->
+        <div id="backgammon-game" class="game-area">
+            <button class="back-button" onclick="showMainMenu()">🔙 العودة للقائمة الرئيسية</button>
+            <h2 style="text-align: center; margin-bottom: 20px;">⚫ لعبة الطاولة ⚪</h2>
+            
+            <!-- أزرار التحكم -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button onclick="resetBackgammon()" style="background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔄 لعبة جديدة</button>
+                <button onclick="rollDiceBackgammon()" id="roll-dice-btn" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🎲 رمي النرد</button>
+                <button onclick="toggleBackgammonMode()" style="background: linear-gradient(45deg, #FFA726, #FF7043); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🤖 وضع اللعب</button>
+                <button onclick="toggleBackgammonLevel()" style="background: linear-gradient(45deg, #9C27B0, #673AB7); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">⚡ المستوى</button>
+            </div>
+
+            <!-- معلومات اللعبة -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px;">
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">اللاعب الحالي</p>
+                    <p id="backgammon-current-player" style="margin: 5px 0 0 0; font-size: 1.2rem; font-weight: 600;">الأبيض</p>
+                </div>
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">النرد</p>
+                    <div id="backgammon-dice" style="margin: 5px 0 0 0; font-size: 1.5rem;">🎲 🎲</div>
+                </div>
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">وضع اللعب</p>
+                    <p id="backgammon-mode" style="margin: 5px 0 0 0; font-size: 1rem; font-weight: 600;">ضد الكمبيوتر</p>
+                </div>
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">المستوى</p>
+                    <p id="backgammon-level" style="margin: 5px 0 0 0; font-size: 1rem; font-weight: 600;">متوسط</p>
+                </div>
+            </div>
+
+            <!-- لوحة الطاولة -->
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <div id="backgammon-board" style="
+                    width: 800px; 
+                    height: 500px; 
+                    background: linear-gradient(45deg, #8B4513, #A0522D);
+                    border: 4px solid #654321;
+                    border-radius: 15px;
+                    position: relative;
+                    display: grid;
+                    grid-template-columns: repeat(12, 1fr);
+                    grid-template-rows: 1fr 60px 1fr;
+                    gap: 2px;
+                    padding: 10px;
+                ">
+                    <!-- سيتم إنشاء النقاط ديناميكياً -->
+                </div>
+            </div>
+
+            <!-- حالة اللعبة -->
+            <div style="text-align: center; margin-top: 20px;">
+                <p id="backgammon-status" style="font-size: 1.2rem; font-weight: 600;">اضغط على "رمي النرد" لبدء اللعب</p>
             </div>
         </div>
 
@@ -419,6 +541,10 @@
         </footer>
     </div>
 
+    <!-- تحميل محركات الألعاب المتقدمة -->
+    <script src="chess-advanced.js"></script>
+    <script src="backgammon-advanced.js"></script>
+    
     <script>
         // متغيرات اللعبة
         let currentFocus = 0;
@@ -426,17 +552,15 @@
         let isRemoteMode = false;
         let soundEnabled = true;
         
-        // متغيرات الشطرنج
-        let chessBoard = [];
-        let selectedSquare = null;
-        let isWhiteTurn = true;
-        let gameStatus = 'playing';
+        // محركات الألعاب
+        let chessEngine = null;
+        let backgammonEngine = null;
 
         // تهيئة اللعبة
         document.addEventListener('DOMContentLoaded', function() {
             gameCards = document.querySelectorAll('.game-card');
             setupRemoteControl();
-            initializeChess();
+            initializeGames();
             
             // إضافة مستمعي الأحداث للبطاقات
             gameCards.forEach((card, index) => {
@@ -548,6 +672,9 @@
             if (gameType === 'chess') {
                 document.getElementById('chess-game').classList.add('active');
                 resetChess();
+            } else if (gameType === 'backgammon') {
+                document.getElementById('backgammon-game').classList.add('active');
+                resetBackgammon();
             } else if (gameType === 'coming-soon') {
                 alert('🎮 هذه اللعبة قيد التطوير وستكون متاحة قريباً!');
                 showMainMenu();
@@ -618,30 +745,17 @@
             alert(soundEnabled ? '🔊 تم تشغيل الصوت' : '🔇 تم إيقاف الصوت');
         }
 
-        // === وظائف الشطرنج ===
+        // === تهيئة الألعاب ===
 
-        // تهيئة الشطرنج
-        function initializeChess() {
-            chessBoard = createInitialBoard();
+        function initializeGames() {
+            chessEngine = new ChessEngine();
+            backgammonEngine = new BackgammonEngine();
             renderChessBoard();
+            renderBackgammonBoard();
         }
 
-        // إنشاء اللوحة الابتدائية
-        function createInitialBoard() {
-            const board = Array(8).fill().map(() => Array(8).fill(''));
-            
-            // القطع السوداء
-            board[0] = ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'];
-            board[1] = ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'];
-            
-            // القطع البيضاء
-            board[6] = ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'];
-            board[7] = ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'];
-            
-            return board;
-        }
+        // === وظائف الشطرنج المتقدمة ===
 
-        // رسم لوحة الشطرنج
         function renderChessBoard() {
             const boardElement = document.getElementById('chess-board');
             boardElement.innerHTML = '';
@@ -650,163 +764,290 @@
                 for (let col = 0; col < 8; col++) {
                     const square = document.createElement('div');
                     square.className = `chess-square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
-                    square.textContent = chessBoard[row][col];
-                    square.onclick = () => handleSquareClick(row, col);
                     
-                    if (selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col) {
+                    const piece = chessEngine.board[row][col];
+                    square.textContent = piece ? piece.symbol : '';
+                    square.onclick = () => handleChessSquareClick(row, col);
+                    
+                    if (chessEngine.selectedSquare && 
+                        chessEngine.selectedSquare[0] === row && 
+                        chessEngine.selectedSquare[1] === col) {
                         square.classList.add('selected');
+                    }
+                    
+                    // إظهار الحركات الممكنة
+                    if (chessEngine.selectedSquare) {
+                        const possibleMoves = chessEngine.getPossibleMoves(
+                            chessEngine.selectedSquare[0], 
+                            chessEngine.selectedSquare[1]
+                        );
+                        if (possibleMoves.some(move => move.row === row && move.col === col)) {
+                            square.classList.add('possible-move');
+                        }
                     }
                     
                     boardElement.appendChild(square);
                 }
             }
             
-            updateGameStatus();
+            updateChessStatus();
         }
 
-        // التعامل مع النقر على المربع
-        function handleSquareClick(row, col) {
-            const piece = chessBoard[row][col];
+        function handleChessSquareClick(row, col) {
+            const piece = chessEngine.board[row][col];
             
-            if (selectedSquare) {
-                const [selectedRow, selectedCol] = selectedSquare;
+            if (chessEngine.selectedSquare) {
+                const [selectedRow, selectedCol] = chessEngine.selectedSquare;
                 
                 if (row === selectedRow && col === selectedCol) {
-                    // إلغاء التحديد
-                    selectedSquare = null;
-                } else if (isValidMove(selectedRow, selectedCol, row, col)) {
-                    // تنفيذ الحركة
-                    makeMove(selectedRow, selectedCol, row, col);
-                } else if (piece && isPieceOwnedByCurrentPlayer(piece)) {
-                    // اختيار قطعة جديدة
-                    selectedSquare = [row, col];
+                    chessEngine.selectedSquare = null;
                 } else {
-                    selectedSquare = null;
+                    const possibleMoves = chessEngine.getPossibleMoves(selectedRow, selectedCol);
+                    const validMove = possibleMoves.find(move => move.row === row && move.col === col);
+                    
+                    if (validMove) {
+                        const move = chessEngine.makeMove(selectedRow, selectedCol, row, col);
+                        
+                        if (move.captured) {
+                            playSound('capture');
+                        } else {
+                            playSound('move');
+                        }
+                        
+                        // إذا كان وضع الكمبيوتر وانتهى دور اللاعب
+                        if (chessEngine.gameMode === 'computer' && 
+                            !chessEngine.isWhiteTurn && 
+                            chessEngine.gameStatus === 'playing') {
+                            setTimeout(async () => {
+                                const aiMove = await chessEngine.makeAIMove();
+                                if (aiMove) {
+                                    playSound('move');
+                                    renderChessBoard();
+                                }
+                            }, 500);
+                        }
+                    } else if (piece && piece.color === (chessEngine.isWhiteTurn ? 'white' : 'black')) {
+                        chessEngine.selectedSquare = [row, col];
+                    } else {
+                        chessEngine.selectedSquare = null;
+                    }
                 }
-            } else if (piece && isPieceOwnedByCurrentPlayer(piece)) {
-                // اختيار قطعة
-                selectedSquare = [row, col];
+            } else if (piece && piece.color === (chessEngine.isWhiteTurn ? 'white' : 'black')) {
+                chessEngine.selectedSquare = [row, col];
             }
             
             renderChessBoard();
         }
 
-        // التحقق من ملكية القطعة
-        function isPieceOwnedByCurrentPlayer(piece) {
-            const isWhitePiece = piece.charCodeAt(0) >= 9812 && piece.charCodeAt(0) <= 9817;
-            return isWhiteTurn === isWhitePiece;
-        }
-
-        // التحقق من صحة الحركة (مبسط)
-        function isValidMove(fromRow, fromCol, toRow, toCol) {
-            // تحقق مبسط - يمكن تحسينه
-            const piece = chessBoard[fromRow][fromCol];
-            const targetPiece = chessBoard[toRow][toCol];
-            
-            // لا يمكن أكل قطعة من نفس اللون
-            if (targetPiece && isPieceOwnedByCurrentPlayer(targetPiece)) {
-                return false;
-            }
-            
-            // تحقق أساسي للحركة
-            const rowDiff = Math.abs(toRow - fromRow);
-            const colDiff = Math.abs(toCol - fromCol);
-            
-            // البيدق
-            if (piece === '♙' || piece === '♟') {
-                const direction = piece === '♙' ? -1 : 1;
-                const startRow = piece === '♙' ? 6 : 1;
-                
-                if (colDiff === 0) {
-                    // حركة للأمام
-                    if (toRow === fromRow + direction && !targetPiece) return true;
-                    if (fromRow === startRow && toRow === fromRow + 2 * direction && !targetPiece) return true;
-                } else if (colDiff === 1 && rowDiff === 1) {
-                    // أكل قطري
-                    return targetPiece && !isPieceOwnedByCurrentPlayer(targetPiece);
-                }
-                return false;
-            }
-            
-            // الرخ
-            if (piece === '♖' || piece === '♜') {
-                return (rowDiff === 0 || colDiff === 0) && isPathClear(fromRow, fromCol, toRow, toCol);
-            }
-            
-            // الفيل
-            if (piece === '♗' || piece === '♝') {
-                return rowDiff === colDiff && isPathClear(fromRow, fromCol, toRow, toCol);
-            }
-            
-            // الملكة
-            if (piece === '♕' || piece === '♛') {
-                return (rowDiff === 0 || colDiff === 0 || rowDiff === colDiff) && isPathClear(fromRow, fromCol, toRow, toCol);
-            }
-            
-            // الحصان
-            if (piece === '♘' || piece === '♞') {
-                return (rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2);
-            }
-            
-            // الملك
-            if (piece === '♔' || piece === '♚') {
-                return rowDiff <= 1 && colDiff <= 1;
-            }
-            
-            return false;
-        }
-
-        // التحقق من خلو المسار
-        function isPathClear(fromRow, fromCol, toRow, toCol) {
-            const rowStep = toRow > fromRow ? 1 : toRow < fromRow ? -1 : 0;
-            const colStep = toCol > fromCol ? 1 : toCol < fromCol ? -1 : 0;
-            
-            let currentRow = fromRow + rowStep;
-            let currentCol = fromCol + colStep;
-            
-            while (currentRow !== toRow || currentCol !== toCol) {
-                if (chessBoard[currentRow][currentCol] !== '') {
-                    return false;
-                }
-                currentRow += rowStep;
-                currentCol += colStep;
-            }
-            
-            return true;
-        }
-
-        // تنفيذ الحركة
-        function makeMove(fromRow, fromCol, toRow, toCol) {
-            const piece = chessBoard[fromRow][fromCol];
-            const capturedPiece = chessBoard[toRow][toCol];
-            
-            chessBoard[toRow][toCol] = piece;
-            chessBoard[fromRow][fromCol] = '';
-            
-            selectedSquare = null;
-            isWhiteTurn = !isWhiteTurn;
-            
-            if (capturedPiece) {
-                playSound('capture');
-            } else {
-                playSound('move');
-            }
-        }
-
-        // تحديث حالة اللعبة
-        function updateGameStatus() {
+        function updateChessStatus() {
             const statusElement = document.getElementById('game-status');
-            statusElement.textContent = isWhiteTurn ? 'دور الأبيض' : 'دور الأسود';
+            const currentPlayer = chessEngine.isWhiteTurn ? 'الأبيض' : 'الأسود';
+            
+            switch (chessEngine.gameStatus) {
+                case 'playing':
+                    statusElement.textContent = `دور ${currentPlayer}`;
+                    break;
+                case 'check':
+                    statusElement.textContent = `كش! دور ${currentPlayer}`;
+                    break;
+                case 'checkmate':
+                    const winner = chessEngine.isWhiteTurn ? 'الأسود' : 'الأبيض';
+                    statusElement.textContent = `كش مات! فاز ${winner}`;
+                    break;
+                case 'stalemate':
+                    statusElement.textContent = 'تعادل - لا توجد حركات صالحة';
+                    break;
+                case 'draw-50-moves':
+                    statusElement.textContent = 'تعادل - قانون الـ50 حركة';
+                    break;
+                case 'draw-insufficient-material':
+                    statusElement.textContent = 'تعادل - قطع غير كافية';
+                    break;
+            }
         }
 
-        // إعادة تشغيل الشطرنج
         function resetChess() {
-            chessBoard = createInitialBoard();
-            selectedSquare = null;
-            isWhiteTurn = true;
-            gameStatus = 'playing';
+            chessEngine.reset();
             renderChessBoard();
             playSound('select');
+        }
+
+        function toggleChessMode() {
+            chessEngine.gameMode = chessEngine.gameMode === 'computer' ? 'friend' : 'computer';
+            const modeText = chessEngine.gameMode === 'computer' ? 'ضد الكمبيوتر' : 'لاعبين';
+            alert(`🎮 تم التبديل إلى وضع: ${modeText}`);
+        }
+
+        function toggleChessLevel() {
+            const levels = ['easy', 'medium', 'hard', 'expert'];
+            const levelNames = ['سهل', 'متوسط', 'صعب', 'خبير'];
+            const currentIndex = levels.indexOf(chessEngine.aiLevel);
+            const nextIndex = (currentIndex + 1) % levels.length;
+            
+            chessEngine.aiLevel = levels[nextIndex];
+            alert(`⚡ تم تغيير المستوى إلى: ${levelNames[nextIndex]}`);
+        }
+
+        // === وظائف الطاولة المتقدمة ===
+
+        function renderBackgammonBoard() {
+            const boardElement = document.getElementById('backgammon-board');
+            boardElement.innerHTML = '';
+            
+            // إنشاء النقاط العلوية (13-24)
+            for (let point = 13; point <= 24; point++) {
+                const pointElement = document.createElement('div');
+                pointElement.className = 'backgammon-point';
+                pointElement.dataset.point = point;
+                pointElement.style.background = (point % 2 === 1) ? '#F0D9B5' : '#B58863';
+                pointElement.style.gridRow = '1';
+                pointElement.onclick = () => handleBackgammonPointClick(point);
+                
+                renderBackgammonPieces(pointElement, point);
+                boardElement.appendChild(pointElement);
+            }
+            
+            // الشريط الأوسط
+            const middleBar = document.createElement('div');
+            middleBar.style.gridRow = '2';
+            middleBar.style.gridColumn = '1 / -1';
+            middleBar.style.background = '#654321';
+            middleBar.style.display = 'flex';
+            middleBar.style.justifyContent = 'space-between';
+            middleBar.style.alignItems = 'center';
+            middleBar.style.padding = '0 20px';
+            middleBar.innerHTML = `
+                <div id="captured-white" style="color: white; font-weight: 600;">قطع بيضاء مأسورة: ${backgammonEngine.board[25].pieces}</div>
+                <div id="captured-black" style="color: white; font-weight: 600;">قطع سوداء مأسورة: ${backgammonEngine.board[26].pieces}</div>
+            `;
+            boardElement.appendChild(middleBar);
+            
+            // إنشاء النقاط السفلية (12-1)
+            for (let point = 12; point >= 1; point--) {
+                const pointElement = document.createElement('div');
+                pointElement.className = 'backgammon-point';
+                pointElement.dataset.point = point;
+                pointElement.style.background = (point % 2 === 0) ? '#F0D9B5' : '#B58863';
+                pointElement.style.gridRow = '3';
+                pointElement.style.borderRadius = '50px 50px 0 0';
+                pointElement.style.justifyContent = 'flex-end';
+                pointElement.onclick = () => handleBackgammonPointClick(point);
+                
+                renderBackgammonPieces(pointElement, point);
+                boardElement.appendChild(pointElement);
+            }
+            
+            updateBackgammonStatus();
+        }
+
+        function renderBackgammonPieces(pointElement, pointNumber) {
+            const pointData = backgammonEngine.board[pointNumber];
+            pointElement.innerHTML = '';
+            
+            if (pointData.pieces > 0) {
+                for (let i = 0; i < Math.min(pointData.pieces, 5); i++) {
+                    const piece = document.createElement('div');
+                    piece.className = `backgammon-piece ${pointData.color}`;
+                    piece.textContent = i === 4 && pointData.pieces > 5 ? `+${pointData.pieces - 4}` : '';
+                    pointElement.appendChild(piece);
+                }
+            }
+        }
+
+        function handleBackgammonPointClick(pointNumber) {
+            if (backgammonEngine.availableMoves.length === 0) {
+                alert('🎲 يجب رمي النرد أولاً!');
+                return;
+            }
+            
+            const possibleMoves = backgammonEngine.getPossibleMoves(pointNumber);
+            
+            if (possibleMoves.length === 0) {
+                alert('❌ لا توجد حركات صالحة من هذه النقطة');
+                return;
+            }
+            
+            if (possibleMoves.length === 1) {
+                // حركة واحدة فقط
+                const move = possibleMoves[0];
+                backgammonEngine.makeMove(move.from, move.to, move.dice);
+                playSound('move');
+                renderBackgammonBoard();
+                
+                // إذا انتهت الحركات، تحقق من دور الكمبيوتر
+                if (backgammonEngine.availableMoves.length === 0 && 
+                    backgammonEngine.gameMode === 'computer' && 
+                    !backgammonEngine.isWhiteTurn) {
+                    setTimeout(async () => {
+                        const aiMoves = await backgammonEngine.makeAIMove();
+                        if (aiMoves && aiMoves.length > 0) {
+                            playSound('move');
+                            renderBackgammonBoard();
+                        }
+                    }, 1000);
+                }
+            } else {
+                // عدة حركات ممكنة - اختر الأولى (يمكن تحسينها)
+                const move = possibleMoves[0];
+                backgammonEngine.makeMove(move.from, move.to, move.dice);
+                playSound('move');
+                renderBackgammonBoard();
+            }
+        }
+
+        function rollDiceBackgammon() {
+            if (backgammonEngine.availableMoves.length > 0) {
+                alert('⚠️ يجب إنهاء الحركات الحالية أولاً');
+                return;
+            }
+            
+            const dice = backgammonEngine.rollDice();
+            document.getElementById('backgammon-dice').textContent = `🎲 ${dice[0]} - ${dice[1]} 🎲`;
+            playSound('move');
+            renderBackgammonBoard();
+        }
+
+        function updateBackgammonStatus() {
+            const statusElement = document.getElementById('backgammon-status');
+            const currentPlayer = backgammonEngine.isWhiteTurn ? 'الأبيض' : 'الأسود';
+            
+            if (backgammonEngine.gameStatus === 'playing') {
+                if (backgammonEngine.availableMoves.length > 0) {
+                    statusElement.textContent = `دور ${currentPlayer} - اختر قطعة للحركة`;
+                } else {
+                    statusElement.textContent = `دور ${currentPlayer} - اضغط "رمي النرد"`;
+                }
+            } else if (backgammonEngine.gameStatus.includes('wins')) {
+                const winner = backgammonEngine.gameStatus.includes('white') ? 'الأبيض' : 'الأسود';
+                statusElement.textContent = `🎉 فاز ${winner}! قيمة اللعبة: ${backgammonEngine.gameValue}`;
+            }
+            
+            document.getElementById('backgammon-current-player').textContent = currentPlayer;
+        }
+
+        function resetBackgammon() {
+            backgammonEngine.reset();
+            document.getElementById('backgammon-dice').textContent = '🎲 🎲';
+            renderBackgammonBoard();
+            playSound('select');
+        }
+
+        function toggleBackgammonMode() {
+            backgammonEngine.gameMode = backgammonEngine.gameMode === 'computer' ? 'friend' : 'computer';
+            const modeText = backgammonEngine.gameMode === 'computer' ? 'ضد الكمبيوتر' : 'لاعبين';
+            document.getElementById('backgammon-mode').textContent = modeText;
+            alert(`🎮 تم التبديل إلى وضع: ${modeText}`);
+        }
+
+        function toggleBackgammonLevel() {
+            const levels = ['easy', 'medium', 'hard', 'expert'];
+            const levelNames = ['سهل', 'متوسط', 'صعب', 'خبير'];
+            const currentIndex = levels.indexOf(backgammonEngine.aiLevel);
+            const nextIndex = (currentIndex + 1) % levels.length;
+            
+            backgammonEngine.aiLevel = levels[nextIndex];
+            document.getElementById('backgammon-level').textContent = levelNames[nextIndex];
+            alert(`⚡ تم تغيير المستوى إلى: ${levelNames[nextIndex]}`);
         }
     </script>
 </body>

@@ -1,0 +1,155 @@
+        <!-- واجهة لعبة الطاولة -->
+        <div id="backgammon-game" class="game-area">
+            <button class="back-button" onclick="showMainMenu()">🔙 العودة للقائمة الرئيسية</button>
+            <h2 style="text-align: center; margin-bottom: 20px;">⚫ لعبة الطاولة ⚪</h2>
+            
+            <!-- أزرار التحكم -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button onclick="resetBackgammon()" style="background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔄 لعبة جديدة</button>
+                <button onclick="rollDiceBackgammon()" id="roll-dice-btn" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🎲 رمي النرد</button>
+                <button onclick="toggleBackgammonMode()" style="background: linear-gradient(45deg, #FFA726, #FF7043); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🤖 وضع اللعب</button>
+                <button onclick="toggleBackgammonLevel()" style="background: linear-gradient(45deg, #9C27B0, #673AB7); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">⚡ المستوى</button>
+            </div>
+
+            <!-- معلومات اللعبة -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px;">
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">اللاعب الحالي</p>
+                    <p id="backgammon-current-player" style="margin: 5px 0 0 0; font-size: 1.2rem; font-weight: 600;">الأبيض</p>
+                </div>
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">النرد</p>
+                    <div id="backgammon-dice" style="margin: 5px 0 0 0; font-size: 1.5rem;">🎲 🎲</div>
+                </div>
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">وضع اللعب</p>
+                    <p id="backgammon-mode" style="margin: 5px 0 0 0; font-size: 1rem; font-weight: 600;">ضد الكمبيوتر</p>
+                </div>
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; opacity: 0.8;">المستوى</p>
+                    <p id="backgammon-level" style="margin: 5px 0 0 0; font-size: 1rem; font-weight: 600;">متوسط</p>
+                </div>
+            </div>
+
+            <!-- لوحة الطاولة -->
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <div id="backgammon-board" style="
+                    width: 800px; 
+                    height: 500px; 
+                    background: linear-gradient(45deg, #8B4513, #A0522D);
+                    border: 4px solid #654321;
+                    border-radius: 15px;
+                    position: relative;
+                    display: grid;
+                    grid-template-columns: repeat(12, 1fr);
+                    grid-template-rows: 1fr 60px 1fr;
+                    gap: 2px;
+                    padding: 10px;
+                ">
+                    <!-- النقاط العلوية (13-24) -->
+                    <div class="backgammon-point" data-point="13" style="grid-row: 1; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="14" style="grid-row: 1; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="15" style="grid-row: 1; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="16" style="grid-row: 1; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="17" style="grid-row: 1; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="18" style="grid-row: 1; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="19" style="grid-row: 1; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="20" style="grid-row: 1; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="21" style="grid-row: 1; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="22" style="grid-row: 1; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="23" style="grid-row: 1; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="24" style="grid-row: 1; background: #B58863;"></div>
+
+                    <!-- الشريط الأوسط -->
+                    <div style="grid-row: 2; grid-column: 1 / -1; background: #654321; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+                        <div id="captured-white" style="color: white; font-weight: 600;">قطع بيضاء مأسورة: 0</div>
+                        <div id="captured-black" style="color: white; font-weight: 600;">قطع سوداء مأسورة: 0</div>
+                    </div>
+
+                    <!-- النقاط السفلية (12-1) -->
+                    <div class="backgammon-point" data-point="12" style="grid-row: 3; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="11" style="grid-row: 3; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="10" style="grid-row: 3; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="9" style="grid-row: 3; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="8" style="grid-row: 3; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="7" style="grid-row: 3; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="6" style="grid-row: 3; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="5" style="grid-row: 3; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="4" style="grid-row: 3; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="3" style="grid-row: 3; background: #F0D9B5;"></div>
+                    <div class="backgammon-point" data-point="2" style="grid-row: 3; background: #B58863;"></div>
+                    <div class="backgammon-point" data-point="1" style="grid-row: 3; background: #F0D9B5;"></div>
+                </div>
+            </div>
+
+            <!-- حالة اللعبة -->
+            <div style="text-align: center; margin-top: 20px;">
+                <p id="backgammon-status" style="font-size: 1.2rem; font-weight: 600;">اضغط على "رمي النرد" لبدء اللعب</p>
+            </div>
+        </div>
+
+        <style>
+            .backgammon-point {
+                border-radius: 0 0 50px 50px;
+                position: relative;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 5px;
+                min-height: 200px;
+            }
+
+            .backgammon-point:nth-child(n+14) {
+                border-radius: 50px 50px 0 0;
+                justify-content: flex-end;
+            }
+
+            .backgammon-point.selected {
+                box-shadow: inset 0 0 0 3px #FFD700;
+            }
+
+            .backgammon-point.possible-move {
+                box-shadow: inset 0 0 0 3px #FF4757;
+            }
+
+            .backgammon-piece {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                margin: 1px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 0.8rem;
+                border: 2px solid rgba(0,0,0,0.3);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            }
+
+            .backgammon-piece.white {
+                background: linear-gradient(45deg, #FFFFFF, #F0F0F0);
+                color: #333;
+            }
+
+            .backgammon-piece.black {
+                background: linear-gradient(45deg, #333333, #111111);
+                color: white;
+            }
+
+            @media (max-width: 768px) {
+                #backgammon-board {
+                    width: 100%;
+                    max-width: 600px;
+                    height: 400px;
+                }
+                
+                .backgammon-piece {
+                    width: 20px;
+                    height: 20px;
+                    font-size: 0.6rem;
+                }
+            }
+        </style>
