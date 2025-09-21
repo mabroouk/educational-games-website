@@ -515,17 +515,67 @@
             </div>
 
             <!-- لوحة الطاولة -->
-            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                <div id="backgammon-board" style="
-                    width: 800px; 
-                    height: 500px; 
-                    background: linear-gradient(45deg, #8B4513, #A0522D);
-                    border: 4px solid #654321;
-                    border-radius: 15px;
-                    position: relative;
-                    display: grid;
-                    grid-template-columns: repeat(12, 1fr);
-                    grid-template-rows: 1fr 60px 1fr;
+            <div style="display: flex; justify-content: center; margin-botto            /* أنماط الطاولة السورية التراثية */
+            .backgammon-board {
+                width: 100%;
+                max-width: 900px;
+                height: 500px;
+                background: 
+                    radial-gradient(circle at 20% 20%, rgba(218, 165, 32, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(139, 69, 19, 0.3) 0%, transparent 50%),
+                    linear-gradient(45deg, #8B4513 0%, #A0522D 25%, #CD853F 50%, #D2691E 75%, #8B4513 100%);
+                border-radius: 20px;
+                margin: 0 auto;
+                position: relative;
+                border: 5px solid #654321;
+                box-shadow: 
+                    0 0 0 2px #DAA520,
+                    0 0 0 4px #8B4513,
+                    0 15px 35px rgba(0,0,0,0.4),
+                    inset 0 2px 10px rgba(255,255,255,0.1);
+                
+                /* زخارف سورية تراثية */
+                background-image: 
+                    repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 10px,
+                        rgba(218, 165, 32, 0.1) 10px,
+                        rgba(218, 165, 32, 0.1) 12px
+                    ),
+                    repeating-linear-gradient(
+                        -45deg,
+                        transparent,
+                        transparent 10px,
+                        rgba(139, 69, 19, 0.1) 10px,
+                        rgba(139, 69, 19, 0.1) 12px
+                    );
+            }
+            
+            /* إضافة زخارف الحواف */
+            .backgammon-board::before {
+                content: '';
+                position: absolute;
+                top: -3px;
+                left: -3px;
+                right: -3px;
+                bottom: -3px;
+                background: linear-gradient(45deg, #DAA520, #B8860B, #DAA520, #B8860B);
+                border-radius: 23px;
+                z-index: -1;
+            }
+            
+            /* زخارف الزوايا */
+            .backgammon-board::after {
+                content: '✦ ✧ ✦';
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: #DAA520;
+                font-size: 1.2rem;
+                text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+            }    grid-template-rows: 1fr 60px 1fr;
                     gap: 2px;
                     padding: 10px;
                 ">
@@ -550,6 +600,121 @@
             </div>
         </div>
 
+        <!-- واجهة لعبة الدومينو -->
+        <div id="domino-game" class="game-area">
+            <button class="back-button" onclick="showMainMenu()">🔙 العودة للقائمة الرئيسية</button>
+            <h2 style="text-align: center; margin-bottom: 20px;">🎯 لعبة الدومينو 🎲</h2>
+            
+            <!-- أزرار التحكم -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button onclick="resetDomino()" style="background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔄 لعبة جديدة</button>
+                <button onclick="drawTileDomino()" id="draw-tile-btn" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🎲 سحب قطعة</button>
+                <button onclick="dominoTutorial.showTutorial()" style="background: linear-gradient(45deg, #FFD700, #FFA000); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">📚 الدليل التعليمي</button>
+                <button onclick="toggleSound()" style="background: linear-gradient(45deg, #FFA726, #FF7043); border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: 600; cursor: pointer; margin: 0 10px; font-family: 'Cairo', sans-serif;">🔊 الصوت</button>
+            </div>
+
+            <!-- إعدادات اللعبة -->
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px; gap: 20px; flex-wrap: wrap;">
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #FFD700; font-weight: 600;">وضع اللعب:</span>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="radio" name="domino-mode" value="computer" checked onchange="toggleDominoMode()" style="transform: scale(1.2);">
+                        <span style="color: white;">🤖 ضد الكمبيوتر</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="radio" name="domino-mode" value="friend" onchange="toggleDominoMode()" style="transform: scale(1.2);">
+                        <span style="color: white;">👥 مع صديق</span>
+                    </label>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #FFD700; font-weight: 600;">نوع اللعبة:</span>
+                    <button onclick="toggleBackgammonVariant()" id="backgammon-variant" style="background: linear-gradient(45deg, #E91E63, #9C27B0); border: none; padding: 8px 15px; border-radius: 10px; color: white; font-weight: 600; cursor: pointer; font-family: 'Cairo', sans-serif;">الطاولة العادية</button>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #FFD700; font-weight: 600;">المستوى:</span>
+                    <button onclick="toggleBackgammonLevel()" id="backgammon-level" style="background: linear-gradient(45deg, #9C27B0, #673AB7); border: none; padding: 8px 15px; border-radius: 10px; color: white; font-weight: 600; cursor: pointer; font-family: 'Cairo', sans-serif;">متوسط</button>
+                </div>
+            </div>
+
+            <!-- معلومات اللعبة -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px;">
+                <div style="text-align: center;">
+                    <div style="color: #4ECDC4; font-weight: 600; margin-bottom: 5px;">اللاعب</div>
+                    <div id="player-tiles-count" style="color: white; font-size: 1.2rem;">7 قطع</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="color: #FFD700; font-weight: 600; margin-bottom: 5px;">الدور الحالي</div>
+                    <div id="domino-current-player" style="color: white; font-size: 1.2rem;">اللاعب</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="color: #FF6B6B; font-weight: 600; margin-bottom: 5px;">الخصم</div>
+                    <div id="computer-tiles-count" style="color: white; font-size: 1.2rem;">7 قطع</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="color: #FFA726; font-weight: 600; margin-bottom: 5px;">المخزون</div>
+                    <div id="stock-tiles-count" style="color: white; font-size: 1.2rem;">14 قطعة</div>
+                </div>
+            </div>
+
+            <!-- لوحة الدومينو -->
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <div class="domino-board" id="domino-board" style="
+                    min-height: 200px;
+                    background: linear-gradient(135deg, #2C5530, #3E7B3E);
+                    border-radius: 15px;
+                    padding: 20px;
+                    border: 3px solid #1E3A1E;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    gap: 5px;
+                    overflow-x: auto;
+                    max-width: 100%;
+                ">
+                    <div id="domino-tiles-container" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+                        <!-- قطع الدومينو ستظهر هنا -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- يد اللاعب -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3 style="color: #4ECDC4; margin-bottom: 15px;">🎯 قطعك</h3>
+                <div id="player-hand" style="
+                    display: flex;
+                    justify-content: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    background: rgba(255,255,255,0.1);
+                    padding: 15px;
+                    border-radius: 15px;
+                    min-height: 80px;
+                ">
+                    <!-- قطع اللاعب ستظهر هنا -->
+                </div>
+            </div>
+
+            <!-- حالة اللعبة -->
+            <div style="text-align: center; margin-top: 20px;">
+                <p id="domino-status" style="font-size: 1.2rem; font-weight: 600;">اختر قطعة من يدك لبدء اللعب</p>
+            </div>
+
+            <!-- منطقة النصائح والاقتراحات -->
+            <div id="domino-hints-area" style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; min-height: 100px;">
+                <h3 style="margin: 0 0 15px 0; color: #FFD700; font-size: 1.2rem; text-align: center;">🎯 النصائح والاقتراحات</h3>
+                <div id="domino-current-hint" style="margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; text-align: center; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <p style="margin: 0; color: #4ECDC4;">اختر قطعة لرؤية النصائح والحركات المقترحة</p>
+                </div>
+                <div id="domino-suggestions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <!-- الاقتراحات ستظهر هنا -->
+                </div>
+            </div>
+        </div>
+
         <div id="other-games" class="game-area">
             <button class="back-button" onclick="showMainMenu()">🔙 العودة للقائمة الرئيسية</button>
             <h2 style="text-align: center; margin-bottom: 20px;" id="current-game-title">اللعبة</h2>
@@ -568,8 +733,10 @@
     <!-- تحميل محركات الألعاب المتقدمة -->
     <script src="chess-advanced.js"></script>
     <script src="backgammon-advanced.js"></script>
+    <script src="domino-advanced.js"></script>
     <script src="chess-tutorial.js"></script>
     <script src="backgammon-tutorial.js"></script>
+    <script src="domino-tutorial.js"></script>
     
     <script>
         // متغيرات اللعبة
@@ -581,6 +748,7 @@
         // محركات الألعاب
         let chessEngine = null;
         let backgammonEngine = null;
+        let dominoEngine = null;
 
         // تهيئة اللعبة
         document.addEventListener('DOMContentLoaded', function() {
@@ -701,6 +869,9 @@
             } else if (gameType === 'backgammon') {
                 document.getElementById('backgammon-game').classList.add('active');
                 resetBackgammon();
+            } else if (gameType === 'domino') {
+                document.getElementById('domino-game').classList.add('active');
+                resetDomino();
             } else if (gameType === 'coming-soon') {
                 alert('🎮 هذه اللعبة قيد التطوير وستكون متاحة قريباً!');
                 showMainMenu();
@@ -1184,6 +1355,280 @@
             backgammonEngine.aiLevel = levels[nextIndex];
             document.getElementById('backgammon-level').textContent = levelNames[nextIndex];
             alert(`⚡ تم تغيير المستوى إلى: ${levelNames[nextIndex]}`);
+        }
+
+        function toggleBackgammonVariant() {
+            const variants = Object.keys(backgammonEngine.gameVariants);
+            const currentIndex = variants.indexOf(backgammonEngine.gameVariant);
+            const nextIndex = (currentIndex + 1) % variants.length;
+            const nextVariant = variants[nextIndex];
+            
+            backgammonEngine.setGameVariant(nextVariant);
+            const variantName = backgammonEngine.gameVariants[nextVariant].name;
+            const variantDescription = backgammonEngine.gameVariants[nextVariant].description;
+            
+            document.getElementById('backgammon-variant').textContent = variantName;
+            renderBackgammonBoard();
+            updateBackgammonHints();
+            
+            // إظهار وصف نوع اللعبة
+            alert(`🎯 تم التبديل إلى: ${variantName}\n\n📝 ${variantDescription}`);
+        }
+
+        // === وظائف الدومينو ===
+        
+        function renderDominoGame() {
+            if (!dominoEngine) return;
+            
+            renderDominoBoard();
+            renderPlayerHand();
+            updateDominoStatus();
+            updateDominoHints();
+        }
+
+        function renderDominoBoard() {
+            const container = document.getElementById('domino-tiles-container');
+            if (!container || !dominoEngine) return;
+            
+            container.innerHTML = '';
+            
+            if (dominoEngine.board.length === 0) {
+                container.innerHTML = '<div style="color: #4ECDC4; font-size: 1.2rem;">ضع أول قطعة لبدء اللعب</div>';
+                return;
+            }
+            
+            dominoEngine.board.forEach((tile, index) => {
+                const tileElement = document.createElement('div');
+                tileElement.className = 'domino-tile';
+                tileElement.style.cssText = `
+                    background: white;
+                    border: 2px solid #333;
+                    border-radius: 8px;
+                    width: 50px;
+                    height: 25px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    color: #333;
+                    font-size: 0.9rem;
+                    margin: 2px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                `;
+                
+                if (tile.isDouble) {
+                    tileElement.style.transform = 'rotate(90deg)';
+                    tileElement.style.height = '50px';
+                    tileElement.style.width = '25px';
+                }
+                
+                tileElement.textContent = `${tile.left}|${tile.right}`;
+                container.appendChild(tileElement);
+            });
+        }
+
+        function renderPlayerHand() {
+            const handContainer = document.getElementById('player-hand');
+            if (!handContainer || !dominoEngine) return;
+            
+            handContainer.innerHTML = '';
+            
+            dominoEngine.playerHand.forEach((tile, index) => {
+                const tileElement = document.createElement('div');
+                tileElement.className = 'domino-tile player-tile';
+                tileElement.style.cssText = `
+                    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+                    border: 2px solid #333;
+                    border-radius: 8px;
+                    width: 60px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    color: #333;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+                `;
+                
+                tileElement.textContent = `${tile.left}|${tile.right}`;
+                tileElement.onclick = () => selectDominoTile(index);
+                
+                tileElement.onmouseover = () => {
+                    tileElement.style.transform = 'translateY(-5px) scale(1.05)';
+                    tileElement.style.boxShadow = '0 5px 15px rgba(76, 205, 196, 0.5)';
+                };
+                
+                tileElement.onmouseout = () => {
+                    tileElement.style.transform = 'translateY(0) scale(1)';
+                    tileElement.style.boxShadow = '0 3px 8px rgba(0,0,0,0.3)';
+                };
+                
+                handContainer.appendChild(tileElement);
+            });
+        }
+
+        function selectDominoTile(index) {
+            if (!dominoEngine || dominoEngine.currentPlayer !== 'player') return;
+            
+            const tile = dominoEngine.playerHand[index];
+            const validMoves = dominoEngine.getValidMoves([tile]);
+            
+            if (validMoves.length > 0) {
+                // تشغيل أول حركة صالحة
+                const move = validMoves[0];
+                dominoEngine.makeMove(move);
+                playSound('move');
+                renderDominoGame();
+                
+                // دور الكمبيوتر
+                if (dominoEngine.gameMode === 'computer' && dominoEngine.currentPlayer === 'computer') {
+                    setTimeout(() => {
+                        dominoEngine.makeAIMove();
+                        renderDominoGame();
+                    }, 1000);
+                }
+            } else {
+                alert('لا يمكن لعب هذه القطعة. جرب قطعة أخرى أو اسحب من المخزون.');
+            }
+            
+            updateDominoHints();
+        }
+
+        function drawTileDomino() {
+            if (!dominoEngine) return;
+            
+            if (dominoEngine.drawTile()) {
+                playSound('draw');
+                renderDominoGame();
+            } else {
+                alert('لا توجد قطع في المخزون!');
+            }
+        }
+
+        function updateDominoStatus() {
+            const statusElement = document.getElementById('domino-status');
+            const playerCountElement = document.getElementById('player-tiles-count');
+            const computerCountElement = document.getElementById('computer-tiles-count');
+            const stockCountElement = document.getElementById('stock-tiles-count');
+            const currentPlayerElement = document.getElementById('domino-current-player');
+            
+            if (!statusElement || !dominoEngine) return;
+            
+            playerCountElement.textContent = `${dominoEngine.playerHand.length} قطع`;
+            computerCountElement.textContent = `${dominoEngine.computerHand.length} قطع`;
+            stockCountElement.textContent = `${dominoEngine.tiles.length} قطعة`;
+            
+            const currentPlayerText = dominoEngine.currentPlayer === 'player' ? 'اللاعب' : 'الكمبيوتر';
+            currentPlayerElement.textContent = currentPlayerText;
+            
+            if (dominoEngine.gameStatus === 'finished') {
+                const winner = dominoEngine.winner;
+                if (winner === 'player') {
+                    statusElement.textContent = '🎉 مبروك! لقد فزت!';
+                } else if (winner === 'computer') {
+                    statusElement.textContent = '😔 فاز الكمبيوتر. حاول مرة أخرى!';
+                } else {
+                    statusElement.textContent = '🤝 تعادل! لعبة ممتازة!';
+                }
+            } else {
+                if (dominoEngine.currentPlayer === 'player') {
+                    statusElement.textContent = 'دورك - اختر قطعة للعب';
+                } else {
+                    statusElement.textContent = 'دور الكمبيوتر - يفكر...';
+                }
+            }
+        }
+
+        function updateDominoHints() {
+            if (!dominoEngine || !dominoTutorial) return;
+            
+            const hintElement = document.getElementById('domino-current-hint');
+            const suggestionsElement = document.getElementById('domino-suggestions');
+            
+            // النصائح الذكية
+            const hint = dominoTutorial.getSmartHint(dominoEngine);
+            if (hint && hintElement) {
+                hintElement.innerHTML = `<p style="margin: 0; color: #4ECDC4;">${hint}</p>`;
+            }
+            
+            // الاقتراحات
+            const suggestions = dominoTutorial.getSuggestedMoves(dominoEngine);
+            if (suggestionsElement) {
+                suggestionsElement.innerHTML = '';
+                
+                suggestions.slice(0, 3).forEach(suggestion => {
+                    const suggestionElement = document.createElement('div');
+                    suggestionElement.style.cssText = `
+                        background: rgba(255,255,255,0.1);
+                        border-radius: 10px;
+                        padding: 10px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        border: 1px solid rgba(255,255,255,0.2);
+                    `;
+                    
+                    suggestionElement.innerHTML = `
+                        <div style="color: #FFD700; font-weight: 600; margin-bottom: 5px;">
+                            ${suggestion.tile.left}|${suggestion.tile.right}
+                        </div>
+                        <div style="color: #4ECDC4; font-size: 0.9rem;">
+                            ${suggestion.reason}
+                        </div>
+                    `;
+                    
+                    suggestionElement.onclick = () => {
+                        const tileIndex = dominoEngine.playerHand.findIndex(t => 
+                            t.left === suggestion.tile.left && t.right === suggestion.tile.right
+                        );
+                        if (tileIndex !== -1) {
+                            selectDominoTile(tileIndex);
+                        }
+                    };
+                    
+                    suggestionElement.onmouseover = () => {
+                        suggestionElement.style.background = 'rgba(255,255,255,0.2)';
+                    };
+                    
+                    suggestionElement.onmouseout = () => {
+                        suggestionElement.style.background = 'rgba(255,255,255,0.1)';
+                    };
+                    
+                    suggestionsElement.appendChild(suggestionElement);
+                });
+            }
+        }
+
+        function resetDomino() {
+            if (dominoEngine) {
+                dominoEngine.reset();
+                renderDominoGame();
+                playSound('select');
+            }
+        }
+
+        function toggleDominoMode() {
+            if (dominoEngine) {
+                dominoEngine.gameMode = dominoEngine.gameMode === 'computer' ? 'friend' : 'computer';
+                const modeText = dominoEngine.gameMode === 'computer' ? 'ضد الكمبيوتر' : 'مع صديق';
+                alert(`🎮 تم التبديل إلى وضع: ${modeText}`);
+                resetDomino();
+            }
+        }
+
+        function toggleDominoLevel() {
+            if (dominoEngine) {
+                const levels = ['easy', 'medium', 'hard', 'expert'];
+                const levelNames = ['سهل', 'متوسط', 'صعب', 'خبير'];
+                const currentIndex = levels.indexOf(dominoEngine.aiLevel);
+                const nextIndex = (currentIndex + 1) % levels.length;
+                
+                dominoEngine.aiLevel = levels[nextIndex];
+                document.getElementById('domino-level-btn').textContent = levelNames[nextIndex];
+                alert(`⚡ تم تغيير المستوى إلى: ${levelNames[nextIndex]}`);
+            }
         }
     </script>
 </body>

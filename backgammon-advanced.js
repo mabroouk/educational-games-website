@@ -2,6 +2,8 @@
 
 class BackgammonEngine {
     constructor() {
+        this.gameVariant = 'standard'; // نوع اللعبة
+        this.gameVariants = this.createGameVariants();
         this.board = this.createInitialBoard();
         this.isWhiteTurn = true;
         this.gameMode = 'computer'; // computer, friend
@@ -18,20 +20,171 @@ class BackgammonEngine {
         this.canDouble = { white: true, black: true };
     }
 
+    createGameVariants() {
+        return {
+            'standard': {
+                name: 'الطاولة العادية',
+                description: 'الطريقة التقليدية المعروفة عالمياً',
+                rules: {
+                    startingPosition: 'standard',
+                    bearingOff: true,
+                    hitting: true,
+                    doubling: true,
+                    crawford: false,
+                    jacoby: false
+                }
+            },
+            'mahbusa': {
+                name: 'الطاولة المحبوسة',
+                description: 'لا يمكن أسر القطع - تركز على السباق',
+                rules: {
+                    startingPosition: 'standard',
+                    bearingOff: true,
+                    hitting: false,
+                    doubling: false,
+                    crawford: false,
+                    jacoby: false
+                }
+            },
+            'plakoto': {
+                name: 'الطاولة الفرنجية (بلاكوتو)',
+                description: 'القطع المأسورة تبقى في مكانها ولا تتحرك',
+                rules: {
+                    startingPosition: 'plakoto',
+                    bearingOff: true,
+                    hitting: 'pin', // تثبيت بدلاً من أسر
+                    doubling: false,
+                    crawford: false,
+                    jacoby: false
+                }
+            },
+            'fevga': {
+                name: 'الطاولة الموسى (فيفجا)',
+                description: 'لا يمكن أسر القطع ولا يمكن بناء أكثر من نقطة واحدة متتالية',
+                rules: {
+                    startingPosition: 'fevga',
+                    bearingOff: true,
+                    hitting: false,
+                    doubling: false,
+                    blockingLimit: 1, // لا يمكن بناء أكثر من نقطة واحدة متتالية
+                    crawford: false,
+                    jacoby: false
+                }
+            },
+            'gul_bara': {
+                name: 'الطاولة الروسية (جول بارا)',
+                description: 'جميع القطع تبدأ خارج اللوحة ويجب إدخالها',
+                rules: {
+                    startingPosition: 'off_board',
+                    bearingOff: true,
+                    hitting: true,
+                    doubling: false,
+                    crawford: false,
+                    jacoby: false
+                }
+            },
+            'tapa': {
+                name: 'الطاولة البلغارية (تابا)',
+                description: 'مزيج من القوانين مع قيود خاصة على الحركة',
+                rules: {
+                    startingPosition: 'standard',
+                    bearingOff: true,
+                    hitting: true,
+                    doubling: false,
+                    specialMoves: true,
+                    crawford: false,
+                    jacoby: false
+                }
+            },
+            'narde': {
+                name: 'الطاولة الأرمنية (ناردي)',
+                description: 'لا يمكن أسر القطع وجميع القطع تتحرك في نفس الاتجاه',
+                rules: {
+                    startingPosition: 'narde',
+                    bearingOff: true,
+                    hitting: false,
+                    doubling: false,
+                    sameDirection: true,
+                    crawford: false,
+                    jacoby: false
+                }
+            },
+            'hypergammon': {
+                name: 'الطاولة السريعة (هايبر جامون)',
+                description: 'كل لاعب لديه 3 قطع فقط للعب السريع',
+                rules: {
+                    startingPosition: 'hyper',
+                    bearingOff: true,
+                    hitting: true,
+                    doubling: true,
+                    piecesCount: 3,
+                    crawford: false,
+                    jacoby: false
+                }
+            }
+        };
+    }
+
     createInitialBoard() {
         // 24 نقطة + نقطتان للقطع المأسورة + نقطتان للقطع المنزلة
         const board = Array(28).fill().map(() => ({ pieces: 0, color: null }));
         
-        // الترتيب الابتدائي للطاولة
-        board[1] = { pieces: 2, color: 'white' };   // نقطة 1
-        board[12] = { pieces: 5, color: 'white' };  // نقطة 12
-        board[17] = { pieces: 3, color: 'white' };  // نقطة 17
-        board[19] = { pieces: 5, color: 'white' };  // نقطة 19
+        const variant = this.gameVariants[this.gameVariant];
+        const startingPosition = variant.rules.startingPosition;
         
-        board[6] = { pieces: 5, color: 'black' };   // نقطة 6
-        board[8] = { pieces: 3, color: 'black' };   // نقطة 8
-        board[13] = { pieces: 5, color: 'black' };  // نقطة 13
-        board[24] = { pieces: 2, color: 'black' };  // نقطة 24
+        switch (startingPosition) {
+            case 'standard':
+                // الترتيب الابتدائي للطاولة العادية
+                board[1] = { pieces: 2, color: 'white' };   // نقطة 1
+                board[12] = { pieces: 5, color: 'white' };  // نقطة 12
+                board[17] = { pieces: 3, color: 'white' };  // نقطة 17
+                board[19] = { pieces: 5, color: 'white' };  // نقطة 19
+                
+                board[6] = { pieces: 5, color: 'black' };   // نقطة 6
+                board[8] = { pieces: 3, color: 'black' };   // نقطة 8
+                board[13] = { pieces: 5, color: 'black' };  // نقطة 13
+                board[24] = { pieces: 2, color: 'black' };  // نقطة 24
+                break;
+                
+            case 'plakoto':
+                // الطاولة الفرنجية - جميع القطع في نقطة واحدة
+                board[1] = { pieces: 15, color: 'white' };
+                board[24] = { pieces: 15, color: 'black' };
+                break;
+                
+            case 'fevga':
+                // الطاولة الموسى - جميع القطع في نقطة واحدة
+                board[1] = { pieces: 15, color: 'white' };
+                board[13] = { pieces: 15, color: 'black' };
+                break;
+                
+            case 'off_board':
+                // الطاولة الروسية - جميع القطع خارج اللوحة
+                board[25] = { pieces: 15, color: 'white' }; // قطع بيضاء خارج اللوحة
+                board[26] = { pieces: 15, color: 'black' }; // قطع سوداء خارج اللوحة
+                break;
+                
+            case 'narde':
+                // الطاولة الأرمنية - ترتيب خاص
+                board[24] = { pieces: 15, color: 'white' };
+                board[12] = { pieces: 15, color: 'black' };
+                break;
+                
+            case 'hyper':
+                // الطاولة السريعة - 3 قطع فقط
+                board[1] = { pieces: 1, color: 'white' };
+                board[2] = { pieces: 1, color: 'white' };
+                board[3] = { pieces: 1, color: 'white' };
+                
+                board[22] = { pieces: 1, color: 'black' };
+                board[23] = { pieces: 1, color: 'black' };
+                board[24] = { pieces: 1, color: 'black' };
+                break;
+                
+            case 'empty':
+                // لوحة فارغة - للطاولة الأمريكية
+                break;
+        }
         
         // النقاط الخاصة:
         // 25 = قطع بيضاء مأسورة
@@ -39,6 +192,19 @@ class BackgammonEngine {
         // 27 = قطع منزلة (خارج اللوحة)
         
         return board;
+    }
+
+    // تغيير نوع اللعبة
+    setGameVariant(variant) {
+        if (this.gameVariants[variant]) {
+            this.gameVariant = variant;
+            this.reset();
+        }
+    }
+
+    // الحصول على قوانين اللعبة الحالية
+    getCurrentRules() {
+        return this.gameVariants[this.gameVariant].rules;
     }
 
     rollDice() {
