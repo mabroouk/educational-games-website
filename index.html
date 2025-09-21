@@ -1476,31 +1476,80 @@
         }
 
         function handleChessSquareClick(row, col) {
+            // منع اللاعب من اللعب في دور الكمبيوتر
+            if (chessEngine.gameMode === 'computer' && chessEngine.currentPlayer === 'black') {
+                return;
+            }
+            
             if (chessEngine.selectedSquare) {
                 const [fromRow, fromCol] = chessEngine.selectedSquare;
+                const targetPiece = chessEngine.board[row][col];
+                
                 if (chessEngine.makeMove(fromRow, fromCol, row, col)) {
                     chessEngine.selectedSquare = null;
+                    
+                    // تشغيل الصوت المناسب
+                    if (targetPiece) {
+                        playSound('capture'); // صوت الأسر
+                    } else {
+                        playSound('move'); // صوت الحركة العادية
+                    }
+                    
                     renderChessBoard();
                     updateChessStatus();
+                    updateChessHints();
                     
                     // دور الكمبيوتر
                     if (chessEngine.gameMode === 'computer' && chessEngine.currentPlayer === 'black') {
                         setTimeout(() => {
-                            chessEngine.makeAIMove();
-                            renderChessBoard();
-                            updateChessStatus();
+                            makeComputerChessMove();
                         }, 1000);
                     }
+                } else {
+                    // حركة غير صالحة
+                    chessEngine.selectedSquare = null;
+                    renderChessBoard();
                 }
             } else {
                 const piece = chessEngine.board[row][col];
                 if (piece && chessEngine.getPieceColor(piece) === chessEngine.currentPlayer) {
                     chessEngine.selectedSquare = [row, col];
+                    playSound('select');
                     renderChessBoard();
                     
                     // تمييز المربع المحدد
                     const squares = document.querySelectorAll('.chess-square');
                     squares[row * 8 + col].classList.add('selected');
+                }
+            }
+        }
+
+        function makeComputerChessMove() {
+            if (chessEngine.gameMode !== 'computer' || chessEngine.currentPlayer !== 'black') {
+                return;
+            }
+            
+            const aiMove = chessEngine.makeAIMove();
+            if (aiMove) {
+                // تشغيل الصوت المناسب
+                if (aiMove.captured) {
+                    playSound('capture');
+                } else {
+                    playSound('move');
+                }
+                
+                renderChessBoard();
+                updateChessStatus();
+                updateChessHints();
+                
+                // فحص حالة الفوز
+                if (chessEngine.isCheckmate()) {
+                    playSound('win');
+                    setTimeout(() => {
+                        alert('🏆 الكمبيوتر فاز! كش مات!');
+                    }, 500);
+                } else if (chessEngine.isCheck()) {
+                    alert('⚠️ كش!');
                 }
             }
         }
@@ -1712,14 +1761,74 @@
 
         function handleBackgammonPointClick(pointIndex) {
             // منطق بسيط للطاولة
-            playSound('move');
-            updateBackgammonStatus();
+            if (backgammonEngine.gameMode === 'computer' && backgammonEngine.currentPlayer === 'black') {
+                return; // منع اللاعب من اللعب في دور الكمبيوتر
+            }
+            
+            const moved = backgammonEngine.makeMove(pointIndex);
+            if (moved) {
+                playSound('move');
+                renderBackgammonBoard();
+                updateBackgammonStatus();
+                updateBackgammonHints();
+                
+                // إذا كان الوضع ضد الكمبيوتر ودور الكمبيوتر
+                if (backgammonEngine.gameMode === 'computer' && backgammonEngine.currentPlayer === 'black') {
+                    setTimeout(() => {
+                        makeComputerBackgammonMove();
+                    }, 1000);
+                }
+            }
+        }
+
+        function makeComputerBackgammonMove() {
+            if (backgammonEngine.gameMode !== 'computer' || backgammonEngine.currentPlayer !== 'black') {
+                return;
+            }
+            
+            const bestMove = backgammonEngine.getBestMove();
+            if (bestMove) {
+                backgammonEngine.makeMove(bestMove.from, bestMove.to);
+                playSound('move');
+                renderBackgammonBoard();
+                updateBackgammonStatus();
+                updateBackgammonHints();
+                
+                // إذا لم ينته دور الكمبيوتر، استمر في اللعب
+                if (backgammonEngine.currentPlayer === 'black' && backgammonEngine.hasValidMoves()) {
+                    setTimeout(() => {
+                        makeComputerBackgammonMove();
+                    }, 800);
+                }
+            }
         }
 
         function rollBackgammonDice() {
-            const dice = backgammonEngine.rollDice();
-            document.getElementById('backgammon-dice').textContent = `🎲 ${dice[0]} 🎲 ${dice[1]}`;
-            updateBackgammonStatus();
+            // تشغيل صوت رمي النرد الواقعي
+            playSound('dice_roll');
+            
+            // إضافة تأثير بصري للرمي
+            const diceDisplay = document.getElementById('backgammon-dice');
+            diceDisplay.innerHTML = '🎲 جاري الرمي...';
+            diceDisplay.style.animation = 'shake 0.8s ease-in-out';
+            
+            setTimeout(() => {
+                const dice = backgammonEngine.rollDice();
+                
+                // عرض النرد بالنقاط الحقيقية
+                diceDisplay.innerHTML = createDiceHTML(dice[0]) + ' ' + createDiceHTML(dice[1]);
+                diceDisplay.style.animation = '';
+                
+                updateBackgammonStatus();
+                updateBackgammonHints();
+                
+                // إذا كان دور الكمبيوتر، ابدأ اللعب تلقائياً
+                if (backgammonEngine.gameMode === 'computer' && backgammonEngine.currentPlayer === 'black') {
+                    setTimeout(() => {
+                        makeComputerBackgammonMove();
+                    }, 1500);
+                }
+            }, 800);
         }
 
         function updateBackgammonStatus() {
