@@ -118,7 +118,7 @@
             box-shadow: 0 10px 25px rgba(0, 184, 148, 0.4);
         }
         
-        .tutorial-interface {
+        .game-interface, .tutorial-interface {
             display: none;
             background: rgba(255, 255, 255, 0.95);
             color: #333;
@@ -128,11 +128,11 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
         
-        .tutorial-interface.active {
+        .game-interface.active, .tutorial-interface.active {
             display: block;
         }
         
-        .tutorial-header {
+        .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -140,7 +140,7 @@
             flex-wrap: wrap;
         }
         
-        .back-button {
+        .back-button, .tutorial-button {
             background: #6c5ce7;
             color: white;
             border: none;
@@ -151,7 +151,7 @@
             transition: all 0.3s ease;
         }
         
-        .back-button:hover {
+        .back-button:hover, .tutorial-button:hover {
             background: #5f3dc4;
             transform: scale(1.05);
         }
@@ -241,6 +241,155 @@
         .difficulty-hard { background: #e17055; color: white; }
         .difficulty-expert { background: #6c5ce7; color: white; }
         
+        .game-board {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .game-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .control-button {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .control-button:hover {
+            background: #00a085;
+            transform: scale(1.05);
+        }
+        
+        .control-button:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            background: #2d3436;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #00b894;
+        }
+        
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 1px;
+            background: #8B4513;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        
+        .chess-square {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .chess-square.light {
+            background: #f0d9b5;
+        }
+        
+        .chess-square.dark {
+            background: #b58863;
+        }
+        
+        .chess-square:hover {
+            background: #7fb069 !important;
+        }
+        
+        .chess-square.selected {
+            background: #7fb069 !important;
+            box-shadow: inset 0 0 0 3px #2d5016;
+        }
+        
+        .backgammon-board {
+            background: #8B4513;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        
+        .domino-board {
+            background: #2d5016;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 auto;
+            min-height: 300px;
+        }
+        
+        .space-game-canvas, .racing-game-canvas {
+            background: linear-gradient(180deg, #000428 0%, #004e92 100%);
+            border-radius: 15px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .racing-game-canvas {
+            background: linear-gradient(180deg, #87CEEB 0%, #228B22 100%);
+        }
+        
+        .tips {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #333;
+        }
+        
+        .tips h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+        
         .interactive-demo {
             background: #e8f4f8;
             border-radius: 15px;
@@ -288,9 +437,20 @@
                 gap: 20px;
             }
             
-            .tutorial-header {
+            .game-header {
                 flex-direction: column;
                 gap: 10px;
+            }
+            
+            .chess-board {
+                grid-template-columns: repeat(8, 35px);
+                grid-template-rows: repeat(8, 35px);
+            }
+            
+            .chess-square {
+                width: 35px;
+                height: 35px;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -315,7 +475,7 @@
                     <span class="difficulty-badge difficulty-hard">صعب</span>
                     <span class="difficulty-badge difficulty-expert">خبير</span>
                 </div>
-                <button class="play-button" onclick="alert('لعبة الشطرنج ستكون متوفرة قريباً!')">ابدأ اللعب</button>
+                <button class="play-button" onclick="showGame('chess')">ابدأ اللعب</button>
                 <button class="tutorial-btn" onclick="showTutorial('chess')">📚 الدرس التعليمي</button>
             </div>
             
@@ -329,7 +489,7 @@
                     <span class="difficulty-badge difficulty-medium">متوسط</span>
                     <span class="difficulty-badge difficulty-hard">صعب</span>
                 </div>
-                <button class="play-button" onclick="alert('لعبة الطاولة ستكون متوفرة قريباً!')">ابدأ اللعب</button>
+                <button class="play-button" onclick="showGame('backgammon')">ابدأ اللعب</button>
                 <button class="tutorial-btn" onclick="showTutorial('backgammon')">📚 الدرس التعليمي</button>
             </div>
             
@@ -343,7 +503,7 @@
                     <span class="difficulty-badge difficulty-medium">متوسط</span>
                     <span class="difficulty-badge difficulty-hard">صعب</span>
                 </div>
-                <button class="play-button" onclick="alert('لعبة الدومينو ستكون متوفرة قريباً!')">ابدأ اللعب</button>
+                <button class="play-button" onclick="showGame('domino')">ابدأ اللعب</button>
                 <button class="tutorial-btn" onclick="showTutorial('domino')">📚 الدرس التعليمي</button>
             </div>
             
@@ -357,7 +517,7 @@
                     <span class="difficulty-badge difficulty-medium">متوسط</span>
                     <span class="difficulty-badge difficulty-hard">صعب</span>
                 </div>
-                <button class="play-button" onclick="alert('لعبة حرب النجوم ستكون متوفرة قريباً!')">ابدأ المغامرة</button>
+                <button class="play-button" onclick="showGame('space')">ابدأ المغامرة</button>
                 <button class="tutorial-btn" onclick="showTutorial('space')">📚 الدرس التعليمي</button>
             </div>
             
@@ -371,16 +531,19 @@
                     <span class="difficulty-badge difficulty-medium">متوسط</span>
                     <span class="difficulty-badge difficulty-hard">صعب</span>
                 </div>
-                <button class="play-button" onclick="alert('لعبة سباق السيارات ستكون متوفرة قريباً!')">ابدأ السباق</button>
+                <button class="play-button" onclick="showGame('racing')">ابدأ السباق</button>
                 <button class="tutorial-btn" onclick="showTutorial('racing')">📚 الدرس التعليمي</button>
             </div>
         </div>
         
+        <!-- الدروس التعليمية -->
+        
         <!-- درس الشطرنج -->
         <div id="chess-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
+            <div class="game-header">
                 <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
                 <h2>📚 تعلم الشطرنج خطوة بخطوة</h2>
+                <button class="tutorial-button" onclick="showGame('chess')">جرب اللعبة</button>
             </div>
             
             <div class="tutorial-content">
@@ -470,9 +633,10 @@
         
         <!-- درس الطاولة -->
         <div id="backgammon-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
+            <div class="game-header">
                 <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
                 <h2>📚 تعلم الطاولة خطوة بخطوة</h2>
+                <button class="tutorial-button" onclick="showGame('backgammon')">جرب اللعبة</button>
             </div>
             
             <div class="tutorial-content">
@@ -515,6 +679,17 @@
                 </div>
                 
                 <div class="tutorial-section">
+                    <h3>🎮 كيفية اللعب بالريموت كنترول</h3>
+                    <ol class="tutorial-steps">
+                        <li>اضغط زر OK لرمي النرد</li>
+                        <li>استخدم الأسهم للتنقل بين النقاط</li>
+                        <li>اختر الحجر الذي تريد تحريكه</li>
+                        <li>اختر النقطة المقصودة</li>
+                        <li>اضغط OK لتأكيد الحركة</li>
+                    </ol>
+                </div>
+                
+                <div class="tutorial-section">
                     <h3>💡 استراتيجيات الفوز</h3>
                     <ol class="tutorial-steps">
                         <li><strong>بناء النقاط:</strong> اجعل نقطتين أو أكثر من حجارتك معاً</li>
@@ -529,9 +704,10 @@
         
         <!-- درس الدومينو -->
         <div id="domino-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
+            <div class="game-header">
                 <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
                 <h2>📚 تعلم الدومينو خطوة بخطوة</h2>
+                <button class="tutorial-button" onclick="showGame('domino')">جرب اللعبة</button>
             </div>
             
             <div class="tutorial-content">
@@ -563,6 +739,17 @@
                 </div>
                 
                 <div class="tutorial-section">
+                    <h3>🎮 كيفية اللعب بالريموت كنترول</h3>
+                    <ol class="tutorial-steps">
+                        <li>استخدم الأسهم للتنقل بين قطعك</li>
+                        <li>اضغط OK لاختيار القطعة</li>
+                        <li>استخدم الأسهم لاختيار مكان وضعها</li>
+                        <li>اضغط OK لوضع القطعة</li>
+                        <li>اضغط زر التمرير إذا لم تستطع اللعب</li>
+                    </ol>
+                </div>
+                
+                <div class="tutorial-section">
                     <h3>💡 نصائح للفوز</h3>
                     <ol class="tutorial-steps">
                         <li><strong>القطع الثقيلة:</strong> تخلص من القطع ذات الأرقام العالية أولاً</li>
@@ -577,9 +764,10 @@
         
         <!-- درس حرب النجوم -->
         <div id="space-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
+            <div class="game-header">
                 <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
                 <h2>📚 تعلم حرب النجوم خطوة بخطوة</h2>
+                <button class="tutorial-button" onclick="showGame('space')">جرب اللعبة</button>
             </div>
             
             <div class="tutorial-content">
@@ -610,6 +798,17 @@
                 </div>
                 
                 <div class="tutorial-section">
+                    <h3>📋 قواعد اللعبة</h3>
+                    <ol class="tutorial-steps">
+                        <li><strong>الهدف:</strong> اجمع أكبر عدد من النقاط بمحاربة الأعداء</li>
+                        <li><strong>الحركة:</strong> تجنب الاصطدام بالأعداء</li>
+                        <li><strong>الإطلاق:</strong> اضرب الأعداء بالرصاصات</li>
+                        <li><strong>الأرواح:</strong> لديك 3 أرواح، لا تفقدها كلها</li>
+                        <li><strong>المستويات:</strong> كلما تقدمت، زادت صعوبة اللعبة</li>
+                    </ol>
+                </div>
+                
+                <div class="tutorial-section">
                     <h3>🎮 كيفية اللعب بالريموت كنترول</h3>
                     <ol class="tutorial-steps">
                         <li>السهم الأيسر: تحريك المركبة يساراً</li>
@@ -630,14 +829,29 @@
                         <li><strong>لا تخف:</strong> إنها مجرد لعبة ممتعة!</li>
                     </ol>
                 </div>
+                
+                <div class="interactive-demo">
+                    <h4>🏆 نظام النقاط</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+                        <div style="padding: 15px; background: white; border-radius: 10px;">
+                            <strong>عدو عادي: 10 نقاط</strong><br>
+                            <small>الأعداء الحمراء العادية</small>
+                        </div>
+                        <div style="padding: 15px; background: white; border-radius: 10px;">
+                            <strong>البقاء على قيد الحياة: نقاط إضافية</strong><br>
+                            <small>كلما عشت أكثر، حصلت على نقاط أكثر</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
         <!-- درس سباق السيارات -->
         <div id="racing-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
+            <div class="game-header">
                 <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
                 <h2>📚 تعلم سباق السيارات خطوة بخطوة</h2>
+                <button class="tutorial-button" onclick="showGame('racing')">جرب اللعبة</button>
             </div>
             
             <div class="tutorial-content">
@@ -668,6 +882,17 @@
                 </div>
                 
                 <div class="tutorial-section">
+                    <h3>📋 قواعد اللعبة</h3>
+                    <ol class="tutorial-steps">
+                        <li><strong>الهدف:</strong> اقطع أطول مسافة ممكنة دون اصطدام</li>
+                        <li><strong>التجنب:</strong> تجنب الاصطدام بالسيارات الأخرى</li>
+                        <li><strong>السرعة:</strong> السرعة تزيد تدريجياً مع الوقت</li>
+                        <li><strong>النقاط:</strong> النقاط تزيد مع المسافة المقطوعة</li>
+                        <li><strong>الانتهاء:</strong> اللعبة تنتهي عند الاصطدام</li>
+                    </ol>
+                </div>
+                
+                <div class="tutorial-section">
                     <h3>🎮 كيفية اللعب بالريموت كنترول</h3>
                     <ol class="tutorial-steps">
                         <li>السهم الأيسر: تحريك السيارة يساراً</li>
@@ -688,8 +913,33 @@
                         <li><strong>استمتع:</strong> الهدف هو المرح والتسلية!</li>
                     </ol>
                 </div>
+                
+                <div class="interactive-demo">
+                    <h4>📊 نظام الإحصائيات</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+                        <div style="padding: 15px; background: white; border-radius: 10px;">
+                            <strong>المسافة</strong><br>
+                            <small>كم متر قطعت في السباق</small>
+                        </div>
+                        <div style="padding: 15px; background: white; border-radius: 10px;">
+                            <strong>الوقت</strong><br>
+                            <small>كم ثانية استمررت في اللعب</small>
+                        </div>
+                        <div style="padding: 15px; background: white; border-radius: 10px;">
+                            <strong>السرعة</strong><br>
+                            <small>سرعتك الحالية في اللعبة</small>
+                        </div>
+                        <div style="padding: 15px; background: white; border-radius: 10px;">
+                            <strong>النقاط</strong><br>
+                            <small>مجموع نقاطك في هذا السباق</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <!-- باقي واجهات الألعاب (نفس الكود السابق مع الذكاء الاصطناعي) -->
+        <!-- يمكن إضافة واجهات الألعاب هنا إذا لزم الأمر -->
         
     </div>
     
@@ -700,34 +950,266 @@
 
     <script>
         // متغيرات عامة
-        let currentView = 'menu';
+        let currentGame = 'menu';
+        let gameAI = null;
+        let gameState = {};
+        
+        // نظام الذكاء الاصطناعي الموحد (نفس الكود السابق)
+        class GameAI {
+            constructor(gameType, difficulty = 'medium') {
+                this.gameType = gameType;
+                this.difficulty = difficulty;
+                this.thinkingTime = this.getThinkingTime();
+            }
+            
+            getThinkingTime() {
+                const times = {
+                    'easy': 500,
+                    'medium': 1000,
+                    'hard': 1500,
+                    'expert': 2000
+                };
+                return times[this.difficulty] || 1000;
+            }
+            
+            async makeMove(gameState) {
+                await new Promise(resolve => setTimeout(resolve, this.thinkingTime));
+                
+                switch(this.gameType) {
+                    case 'chess':
+                        return this.makeChessMove(gameState);
+                    case 'backgammon':
+                        return this.makeBackgammonMove(gameState);
+                    case 'domino':
+                        return this.makeDominoMove(gameState);
+                    default:
+                        return null;
+                }
+            }
+            
+            makeChessMove(state) {
+                const possibleMoves = this.getChessPossibleMoves(state);
+                if (possibleMoves.length === 0) return null;
+                
+                switch(this.difficulty) {
+                    case 'easy':
+                        return possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                    case 'medium':
+                        return this.getBestChessMove(possibleMoves, 2);
+                    case 'hard':
+                        return this.getBestChessMove(possibleMoves, 3);
+                    case 'expert':
+                        return this.getBestChessMove(possibleMoves, 4);
+                    default:
+                        return possibleMoves[0];
+                }
+            }
+            
+            makeBackgammonMove(state) {
+                const possibleMoves = this.getBackgammonPossibleMoves(state);
+                if (possibleMoves.length === 0) return null;
+                
+                const safeMoves = possibleMoves.filter(move => this.isBackgammonMoveSafe(move, state));
+                const movesToUse = safeMoves.length > 0 ? safeMoves : possibleMoves;
+                
+                return movesToUse[Math.floor(Math.random() * movesToUse.length)];
+            }
+            
+            makeDominoMove(state) {
+                const possibleMoves = this.getDominoPossibleMoves(state);
+                if (possibleMoves.length === 0) return null;
+                
+                possibleMoves.sort((a, b) => this.getDominoPieceValue(b) - this.getDominoPieceValue(a));
+                
+                return possibleMoves[0];
+            }
+            
+            // باقي الوظائف المساعدة (نفس الكود السابق)
+            getChessPossibleMoves(state) {
+                const moves = [];
+                const board = state.board || this.getInitialChessBoard();
+                
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const piece = board[row][col];
+                        if (piece && piece.color === 'black') {
+                            const pieceMoves = this.getPieceValidMoves(piece, row, col, board);
+                            moves.push(...pieceMoves);
+                        }
+                    }
+                }
+                
+                return moves;
+            }
+            
+            getBestChessMove(moves, depth) {
+                let bestMove = moves[0];
+                let bestScore = -Infinity;
+                
+                for (const move of moves) {
+                    const score = this.evaluateChessMove(move);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = move;
+                    }
+                }
+                
+                return bestMove;
+            }
+            
+            evaluateChessMove(move) {
+                let score = Math.random() * 10;
+                
+                if (move.capture) {
+                    const pieceValues = {
+                        'pawn': 1, 'knight': 3, 'bishop': 3,
+                        'rook': 5, 'queen': 9, 'king': 100
+                    };
+                    score += pieceValues[move.capturedPiece] || 0;
+                }
+                
+                if (move.to.row >= 3 && move.to.row <= 4 && move.to.col >= 3 && move.to.col <= 4) {
+                    score += 2;
+                }
+                
+                return score;
+            }
+            
+            getPieceValidMoves(piece, row, col, board) {
+                const moves = [];
+                
+                switch(piece.type) {
+                    case 'pawn':
+                        if (row > 0 && !board[row-1][col]) {
+                            moves.push({from: {row, col}, to: {row: row-1, col}});
+                        }
+                        if (row > 0 && col > 0 && board[row-1][col-1] && board[row-1][col-1].color === 'white') {
+                            moves.push({from: {row, col}, to: {row: row-1, col: col-1}, capture: true});
+                        }
+                        if (row > 0 && col < 7 && board[row-1][col+1] && board[row-1][col+1].color === 'white') {
+                            moves.push({from: {row, col}, to: {row: row-1, col: col+1}, capture: true});
+                        }
+                        break;
+                        
+                    case 'rook':
+                        for (let i = 1; i < 8; i++) {
+                            if (row + i < 8) {
+                                if (!board[row + i][col]) {
+                                    moves.push({from: {row, col}, to: {row: row + i, col}});
+                                } else {
+                                    if (board[row + i][col].color === 'white') {
+                                        moves.push({from: {row, col}, to: {row: row + i, col}, capture: true});
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                }
+                
+                return moves;
+            }
+            
+            getBackgammonPossibleMoves(state) {
+                const moves = [];
+                const dice = state.dice || [1, 1];
+                
+                for (let i = 0; i < 24; i++) {
+                    if (state.board && state.board[i] && state.board[i].color === 'black') {
+                        for (const die of dice) {
+                            if (i - die >= 0) {
+                                moves.push({from: i, to: i - die, die});
+                            }
+                        }
+                    }
+                }
+                
+                return moves;
+            }
+            
+            isBackgammonMoveSafe(move, state) {
+                const targetPoint = move.to;
+                return !state.board || !state.board[targetPoint] || state.board[targetPoint].color !== 'white' || state.board[targetPoint].count <= 1;
+            }
+            
+            getDominoPossibleMoves(state) {
+                const moves = [];
+                const hand = state.aiHand || [];
+                const board = state.board || [];
+                
+                if (board.length === 0) {
+                    return hand.map((piece, index) => ({piece, index, position: 'start'}));
+                }
+                
+                const leftEnd = board[0];
+                const rightEnd = board[board.length - 1];
+                
+                for (let i = 0; i < hand.length; i++) {
+                    const piece = hand[i];
+                    if (piece[0] === leftEnd[0] || piece[1] === leftEnd[0]) {
+                        moves.push({piece, index: i, position: 'left'});
+                    }
+                    if (piece[0] === rightEnd[1] || piece[1] === rightEnd[1]) {
+                        moves.push({piece, index: i, position: 'right'});
+                    }
+                }
+                
+                return moves;
+            }
+            
+            getDominoPieceValue(piece) {
+                return piece[0] + piece[1];
+            }
+            
+            getInitialChessBoard() {
+                const board = Array(8).fill().map(() => Array(8).fill(null));
+                
+                board[0] = [
+                    {type: 'rook', color: 'black'}, {type: 'knight', color: 'black'}, 
+                    {type: 'bishop', color: 'black'}, {type: 'queen', color: 'black'},
+                    {type: 'king', color: 'black'}, {type: 'bishop', color: 'black'}, 
+                    {type: 'knight', color: 'black'}, {type: 'rook', color: 'black'}
+                ];
+                
+                for (let i = 0; i < 8; i++) {
+                    board[1][i] = {type: 'pawn', color: 'black'};
+                    board[6][i] = {type: 'pawn', color: 'white'};
+                }
+                
+                board[7] = [
+                    {type: 'rook', color: 'white'}, {type: 'knight', color: 'white'}, 
+                    {type: 'bishop', color: 'white'}, {type: 'queen', color: 'white'},
+                    {type: 'king', color: 'white'}, {type: 'bishop', color: 'white'}, 
+                    {type: 'knight', color: 'white'}, {type: 'rook', color: 'white'}
+                ];
+                
+                return board;
+            }
+        }
         
         // وظائف التنقل
         function showMainMenu() {
-            // إخفاء جميع الدروس التعليمية
-            document.querySelectorAll('.tutorial-interface').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // إظهار القائمة الرئيسية
+            document.querySelectorAll('.game-interface, .tutorial-interface').forEach(el => el.classList.remove('active'));
             document.getElementById('main-menu').style.display = 'grid';
-            currentView = 'menu';
+            currentGame = 'menu';
+        }
+        
+        function showGame(gameType) {
+            document.getElementById('main-menu').style.display = 'none';
+            document.querySelectorAll('.game-interface, .tutorial-interface').forEach(el => el.classList.remove('active'));
+            
+            // هنا يمكن إضافة واجهات الألعاب إذا لزم الأمر
+            alert(`سيتم تشغيل لعبة ${gameType} قريباً! الدروس التعليمية متوفرة الآن.`);
         }
         
         function showTutorial(gameType) {
-            // إخفاء القائمة الرئيسية
             document.getElementById('main-menu').style.display = 'none';
+            document.querySelectorAll('.game-interface, .tutorial-interface').forEach(el => el.classList.remove('active'));
             
-            // إخفاء جميع الدروس التعليمية
-            document.querySelectorAll('.tutorial-interface').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // إظهار الدرس المطلوب
             const tutorialElement = document.getElementById(gameType + '-tutorial');
             if (tutorialElement) {
                 tutorialElement.classList.add('active');
-                currentView = gameType + '-tutorial';
+                currentGame = gameType + '-tutorial';
             }
         }
         
@@ -735,16 +1217,18 @@
         document.addEventListener('keydown', function(e) {
             switch(e.key) {
                 case 'Enter':
-                    if (currentView === 'menu') {
-                        const firstTutorialButton = document.querySelector('.tutorial-btn');
-                        if (firstTutorialButton) firstTutorialButton.click();
+                    if (currentGame === 'menu') {
+                        const firstButton = document.querySelector('.play-button');
+                        if (firstButton) firstButton.click();
                     }
                     break;
                 case 'Escape':
-                case 'Home':
-                    if (currentView !== 'menu') {
+                    if (currentGame !== 'menu') {
                         showMainMenu();
                     }
+                    break;
+                case 'Home':
+                    showMainMenu();
                     break;
             }
         });
