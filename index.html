@@ -1,758 +1,14 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع الألعاب التعليمي - محاسب أحمد مبروك</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Cairo', 'Amiri', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: white;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 40px;
-        }
-        
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 20px;
-        }
-        
-        .game-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 15px;
-        }
-        
-        .game-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-        }
-        
-        .game-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
-        .game-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-        
-        .game-description {
-            font-size: 1rem;
-            opacity: 0.8;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        
-        .play-button, .tutorial-btn {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            margin: 5px;
-        }
-        
-        .tutorial-btn {
-            background: linear-gradient(45deg, #00b894, #00a085);
-        }
-        
-        .play-button:hover, .tutorial-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
-        }
-        
-        .tutorial-btn:hover {
-            box-shadow: 0 10px 25px rgba(0, 184, 148, 0.4);
-        }
-        
-        .tutorial-interface {
-            display: none;
-            background: rgba(255, 255, 255, 0.95);
-            color: #333;
-            border-radius: 20px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        
-        .tutorial-interface.active {
-            display: block;
-        }
-        
-        .tutorial-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .back-button {
-            background: #6c5ce7;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .back-button:hover {
-            background: #5f3dc4;
-            transform: scale(1.05);
-        }
-        
-        .tutorial-content {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            line-height: 1.8;
-        }
-        
-        .tutorial-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .tutorial-section h3 {
-            color: #2d3436;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-            border-bottom: 2px solid #00b894;
-            padding-bottom: 10px;
-        }
-        
-        .tutorial-steps {
-            list-style: none;
-            counter-reset: step-counter;
-        }
-        
-        .tutorial-steps li {
-            counter-increment: step-counter;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #e8f4f8;
-            border-radius: 8px;
-            position: relative;
-            padding-right: 60px;
-        }
-        
-        .tutorial-steps li::before {
-            content: counter(step-counter);
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            background: #00b894;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .age-indicator {
-            background: linear-gradient(45deg, #ff9ff3, #f368e0);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        
-        .difficulty-level {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-        
-        .difficulty-badge {
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .difficulty-easy { background: #00b894; color: white; }
-        .difficulty-medium { background: #fdcb6e; color: #2d3436; }
-        .difficulty-hard { background: #e17055; color: white; }
-        .difficulty-expert { background: #6c5ce7; color: white; }
-        
-        .interactive-demo {
-            background: #e8f4f8;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .demo-button {
-            background: #74b9ff;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .demo-button:hover {
-            background: #0984e3;
-            transform: scale(1.05);
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            background: rgba(0,0,0,0.2);
-            margin-top: 50px;
-        }
-        
-        .footer p {
-            margin-bottom: 10px;
-            opacity: 0.8;
-        }
-        
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .games-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .tutorial-header {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎮 موقع الألعاب التعليمي 🎯</h1>
-            <p>ألعاب ذكية وممتعة للكبار والصغار - مع دروس تعليمية شاملة ودعم كامل للريموت كنترول</p>
-        </div>
-        
-        <!-- القائمة الرئيسية -->
-        <div id="main-menu" class="games-grid">
-            <div class="game-card">
-                <span class="game-icon">♔</span>
-                <div class="game-title">الشطرنج</div>
-                <div class="game-description">لعبة الملوك والاستراتيجية مع ذكاء اصطناعي متقدم ودروس تعليمية شاملة</div>
-                <div class="age-indicator">مناسب من عمر 6 سنوات</div>
-                <div class="difficulty-level">
-                    <span class="difficulty-badge difficulty-easy">سهل</span>
-                    <span class="difficulty-badge difficulty-medium">متوسط</span>
-                    <span class="difficulty-badge difficulty-hard">صعب</span>
-                    <span class="difficulty-badge difficulty-expert">خبير</span>
-                </div>
-                <button class="play-button" onclick="alert('لعبة الشطرنج ستكون متوفرة قريباً!')">ابدأ اللعب</button>
-                <button class="tutorial-btn" onclick="showTutorial('chess')">📚 الدرس التعليمي</button>
-            </div>
-            
-            <div class="game-card">
-                <span class="game-icon">🎲</span>
-                <div class="game-title">الطاولة</div>
-                <div class="game-description">لعبة الحظ والمهارة التراثية استمتع مع 8 أنواع مختلفة من الطاولة</div>
-                <div class="age-indicator">مناسب من عمر 5 سنوات</div>
-                <div class="difficulty-level">
-                    <span class="difficulty-badge difficulty-easy">سهل</span>
-                    <span class="difficulty-badge difficulty-medium">متوسط</span>
-                    <span class="difficulty-badge difficulty-hard">صعب</span>
-                </div>
-                <button class="play-button" onclick="alert('لعبة الطاولة ستكون متوفرة قريباً!')">ابدأ اللعب</button>
-                <button class="tutorial-btn" onclick="showTutorial('backgammon')">📚 الدرس التعليمي</button>
-            </div>
-            
-            <div class="game-card">
-                <span class="game-icon">🀫</span>
-                <div class="game-title">الدومينو</div>
-                <div class="game-description">لعبة الأرقام والتخطيط مع 28 قطعة كاملة وذكاء اصطناعي متطور</div>
-                <div class="age-indicator">مناسب من عمر 4 سنوات</div>
-                <div class="difficulty-level">
-                    <span class="difficulty-badge difficulty-easy">سهل</span>
-                    <span class="difficulty-badge difficulty-medium">متوسط</span>
-                    <span class="difficulty-badge difficulty-hard">صعب</span>
-                </div>
-                <button class="play-button" onclick="alert('لعبة الدومينو ستكون متوفرة قريباً!')">ابدأ اللعب</button>
-                <button class="tutorial-btn" onclick="showTutorial('domino')">📚 الدرس التعليمي</button>
-            </div>
-            
-            <div class="game-card">
-                <span class="game-icon">🚀</span>
-                <div class="game-title">حرب النجوم</div>
-                <div class="game-description">مغامرة فضائية مثيرة مناسبة للأطفال من 3 سنوات مع رسوميات جميلة</div>
-                <div class="age-indicator">مناسب من عمر 3 سنوات</div>
-                <div class="difficulty-level">
-                    <span class="difficulty-badge difficulty-easy">سهل</span>
-                    <span class="difficulty-badge difficulty-medium">متوسط</span>
-                    <span class="difficulty-badge difficulty-hard">صعب</span>
-                </div>
-                <button class="play-button" onclick="alert('لعبة حرب النجوم ستكون متوفرة قريباً!')">ابدأ المغامرة</button>
-                <button class="tutorial-btn" onclick="showTutorial('space')">📚 الدرس التعليمي</button>
-            </div>
-            
-            <div class="game-card">
-                <span class="game-icon">🏎️</span>
-                <div class="game-title">سباق السيارات</div>
-                <div class="game-description">سباق سريع ومثير تجنب السيارات واجمع أكبر عدد من النقاط</div>
-                <div class="age-indicator">مناسب من عمر 3 سنوات</div>
-                <div class="difficulty-level">
-                    <span class="difficulty-badge difficulty-easy">سهل</span>
-                    <span class="difficulty-badge difficulty-medium">متوسط</span>
-                    <span class="difficulty-badge difficulty-hard">صعب</span>
-                </div>
-                <button class="play-button" onclick="alert('لعبة سباق السيارات ستكون متوفرة قريباً!')">ابدأ السباق</button>
-                <button class="tutorial-btn" onclick="showTutorial('racing')">📚 الدرس التعليمي</button>
-            </div>
-        </div>
-        
-        <!-- درس الشطرنج -->
-        <div id="chess-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
-                <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
-                <h2>📚 تعلم الشطرنج خطوة بخطوة</h2>
-            </div>
-            
-            <div class="tutorial-content">
-                <div class="tutorial-section">
-                    <h3>🎯 مقدمة عن الشطرنج</h3>
-                    <p>الشطرنج هو لعبة استراتيجية رائعة تنمي التفكير والذكاء. اللعبة تُلعب على لوحة مربعة 8×8 مع 32 قطعة، 16 لكل لاعب.</p>
-                    
-                    <div class="interactive-demo">
-                        <h4>🔍 تعرف على القطع</h4>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">♔</div>
-                                <strong>الملك</strong><br>
-                                <small>أهم قطعة - يتحرك مربع واحد في أي اتجاه</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">♕</div>
-                                <strong>الملكة</strong><br>
-                                <small>أقوى قطعة - تتحرك في جميع الاتجاهات</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">♖</div>
-                                <strong>القلعة</strong><br>
-                                <small>تتحرك أفقياً وعمودياً فقط</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">♗</div>
-                                <strong>الفيل</strong><br>
-                                <small>يتحرك قطرياً فقط</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">♘</div>
-                                <strong>الحصان</strong><br>
-                                <small>يتحرك على شكل حرف L</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">♙</div>
-                                <strong>البيدق</strong><br>
-                                <small>يتحرك للأمام مربع واحد</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>📋 قواعد اللعبة الأساسية</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>الهدف:</strong> إعطاء كش مات للملك الخصم (جعله محاصر بلا مهرب)</li>
-                        <li><strong>البداية:</strong> اللاعب الأبيض يبدأ دائماً</li>
-                        <li><strong>الحركة:</strong> كل لاعب يحرك قطعة واحدة في دوره</li>
-                        <li><strong>الأكل:</strong> عندما تصل قطعتك لمربع به قطعة خصم، تأكلها</li>
-                        <li><strong>الكش:</strong> عندما يكون الملك مهدد، يجب حمايته فوراً</li>
-                    </ol>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>🎮 كيفية اللعب بالريموت كنترول</h3>
-                    <ol class="tutorial-steps">
-                        <li>استخدم الأسهم للتنقل بين المربعات</li>
-                        <li>اضغط زر OK لاختيار القطعة</li>
-                        <li>استخدم الأسهم مرة أخرى لاختيار المربع المقصود</li>
-                        <li>اضغط OK مرة أخرى لتحريك القطعة</li>
-                        <li>اضغط زر Back للعودة أو إلغاء الاختيار</li>
-                    </ol>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>💡 نصائح للمبتدئين</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>طور قطعك:</strong> أخرج الأحصنة والفيلة قبل الملكة</li>
-                        <li><strong>احم الملك:</strong> قم بالتبييت مبكراً لحماية الملك</li>
-                        <li><strong>تحكم في المركز:</strong> ضع البيادق في المربعات المركزية</li>
-                        <li><strong>فكر قبل الحركة:</strong> تأكد من أن حركتك آمنة</li>
-                        <li><strong>راقب قطع الخصم:</strong> انتبه للتهديدات</li>
-                    </ol>
-                </div>
-                
-                <div class="interactive-demo">
-                    <h4>🎯 تدريب تفاعلي</h4>
-                    <p>جرب هذه التمارين البسيطة:</p>
-                    <button class="demo-button" onclick="alert('تمرين 1: حرك البيدق مربعين للأمام في أول حركة')">تمرين البيدق</button>
-                    <button class="demo-button" onclick="alert('تمرين 2: حرك الحصان على شكل حرف L')">تمرين الحصان</button>
-                    <button class="demo-button" onclick="alert('تمرين 3: استخدم القلعة للتحكم في الصف')">تمرين القلعة</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- درس الطاولة -->
-        <div id="backgammon-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
-                <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
-                <h2>📚 تعلم الطاولة خطوة بخطوة</h2>
-            </div>
-            
-            <div class="tutorial-content">
-                <div class="tutorial-section">
-                    <h3>🎲 مقدمة عن الطاولة</h3>
-                    <p>الطاولة هي لعبة تراثية عريقة تجمع بين الحظ والمهارة. اللعبة تُلعب بحجرين نرد و30 حجر (15 لكل لاعب) على لوحة بها 24 نقطة.</p>
-                    
-                    <div class="interactive-demo">
-                        <h4>🎯 أنواع الطاولة المتوفرة</h4>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
-                            <div style="padding: 15px; background: white; border-radius: 10px;">
-                                <strong>الطاولة العادية</strong><br>
-                                <small>النوع الكلاسيكي الأكثر شهرة</small>
-                            </div>
-                            <div style="padding: 15px; background: white; border-radius: 10px;">
-                                <strong>الطاولة المحبوسة</strong><br>
-                                <small>نوع متقدم مع قواعد خاصة</small>
-                            </div>
-                            <div style="padding: 15px; background: white; border-radius: 10px;">
-                                <strong>البلاكوتو</strong><br>
-                                <small>النوع اليوناني التقليدي</small>
-                            </div>
-                            <div style="padding: 15px; background: white; border-radius: 10px;">
-                                <strong>الفيڤجا</strong><br>
-                                <small>نوع سريع ومثير</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>📋 قواعد اللعبة الأساسية</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>الهدف:</strong> نقل جميع حجارتك إلى البيت ثم إخراجها من اللوحة</li>
-                        <li><strong>النرد:</strong> ارم حجري النرد واستخدم الأرقام للحركة</li>
-                        <li><strong>الحركة:</strong> حرك الحجارة حسب أرقام النرد</li>
-                        <li><strong>الأكل:</strong> يمكن أكل حجر الخصم المنفرد</li>
-                        <li><strong>الحبس:</strong> بناء نقاط قوية لمنع تقدم الخصم</li>
-                    </ol>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>💡 استراتيجيات الفوز</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>بناء النقاط:</strong> اجعل نقطتين أو أكثر من حجارتك معاً</li>
-                        <li><strong>منع الخصم:</strong> ابن نقاط في طريق خصمك</li>
-                        <li><strong>الهروب:</strong> أخرج حجارتك من منطقة الخصم بسرعة</li>
-                        <li><strong>التوقيت:</strong> اختر الوقت المناسب للهجوم والدفاع</li>
-                        <li><strong>الحظ والمهارة:</strong> استغل الحظ الجيد واستعد للسيء</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-        
-        <!-- درس الدومينو -->
-        <div id="domino-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
-                <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
-                <h2>📚 تعلم الدومينو خطوة بخطوة</h2>
-            </div>
-            
-            <div class="tutorial-content">
-                <div class="tutorial-section">
-                    <h3>🀫 مقدمة عن الدومينو</h3>
-                    <p>الدومينو لعبة ممتعة تعتمد على التخطيط والتفكير المنطقي. المجموعة تحتوي على 28 قطعة، كل قطعة بها رقمين من 0 إلى 6.</p>
-                    
-                    <div class="interactive-demo">
-                        <h4>🔢 أمثلة على قطع الدومينو</h4>
-                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 20px 0;">
-                            <div style="background: white; padding: 10px; border-radius: 5px; border: 2px solid #333;">0 | 0</div>
-                            <div style="background: white; padding: 10px; border-radius: 5px; border: 2px solid #333;">1 | 2</div>
-                            <div style="background: white; padding: 10px; border-radius: 5px; border: 2px solid #333;">3 | 4</div>
-                            <div style="background: white; padding: 10px; border-radius: 5px; border: 2px solid #333;">5 | 6</div>
-                            <div style="background: white; padding: 10px; border-radius: 5px; border: 2px solid #333;">6 | 6</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>📋 قواعد اللعبة</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>التوزيع:</strong> كل لاعب يأخذ 7 قطع في البداية</li>
-                        <li><strong>البداية:</strong> اللاعب الذي لديه أعلى قطعة مزدوجة يبدأ</li>
-                        <li><strong>اللعب:</strong> ضع قطعة بحيث يتطابق أحد أرقامها مع طرف اللوحة</li>
-                        <li><strong>التمرير:</strong> إذا لم تستطع اللعب، مرر دورك</li>
-                        <li><strong>الفوز:</strong> أول من ينهي قطعه يفوز</li>
-                    </ol>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>💡 نصائح للفوز</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>القطع الثقيلة:</strong> تخلص من القطع ذات الأرقام العالية أولاً</li>
-                        <li><strong>راقب الخصم:</strong> انتبه لما يلعبه خصمك</li>
-                        <li><strong>احتفظ بالتنوع:</strong> حاول الاحتفاظ بأرقام متنوعة</li>
-                        <li><strong>استخدم المزدوجات:</strong> القطع المزدوجة مفيدة للتحكم</li>
-                        <li><strong>خطط مسبقاً:</strong> فكر في الحركات القادمة</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-        
-        <!-- درس حرب النجوم -->
-        <div id="space-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
-                <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
-                <h2>📚 تعلم حرب النجوم خطوة بخطوة</h2>
-            </div>
-            
-            <div class="tutorial-content">
-                <div class="tutorial-section">
-                    <h3>🚀 مقدمة عن حرب النجوم</h3>
-                    <p>حرب النجوم لعبة مغامرات فضائية مثيرة ومناسبة للأطفال من عمر 3 سنوات. قد مركبتك الفضائية واحم الأرض من الغزاة!</p>
-                    
-                    <div class="interactive-demo">
-                        <h4>🎯 عناصر اللعبة</h4>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
-                            <div style="text-align: center; padding: 15px; background: #00ff00; color: black; border-radius: 10px;">
-                                <div style="font-size: 2rem;">🚀</div>
-                                <strong>مركبتك</strong><br>
-                                <small>المركبة الخضراء التي تتحكم بها</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: #ff0000; color: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">👾</div>
-                                <strong>الأعداء</strong><br>
-                                <small>المركبات الحمراء التي تهاجمك</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: #ffff00; color: black; border-radius: 10px;">
-                                <div style="font-size: 2rem;">💥</div>
-                                <strong>الرصاصات</strong><br>
-                                <small>الرصاصات الصفراء لمحاربة الأعداء</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>🎮 كيفية اللعب بالريموت كنترول</h3>
-                    <ol class="tutorial-steps">
-                        <li>السهم الأيسر: تحريك المركبة يساراً</li>
-                        <li>السهم الأيمن: تحريك المركبة يميناً</li>
-                        <li>زر OK أو المسافة: إطلاق النار</li>
-                        <li>زر الإيقاف: إيقاف اللعبة مؤقتاً</li>
-                        <li>زر Back: العودة للقائمة الرئيسية</li>
-                    </ol>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>💡 نصائح للأطفال</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>ابدأ بالمستوى السهل:</strong> تعلم التحكم أولاً</li>
-                        <li><strong>تحرك كثيراً:</strong> لا تبق في مكان واحد</li>
-                        <li><strong>اطلق النار باستمرار:</strong> لا تتردد في الإطلاق</li>
-                        <li><strong>راقب الأعداء:</strong> انتبه لحركتهم</li>
-                        <li><strong>لا تخف:</strong> إنها مجرد لعبة ممتعة!</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-        
-        <!-- درس سباق السيارات -->
-        <div id="racing-tutorial" class="tutorial-interface">
-            <div class="tutorial-header">
-                <button class="back-button" onclick="showMainMenu()">العودة للرئيسية</button>
-                <h2>📚 تعلم سباق السيارات خطوة بخطوة</h2>
-            </div>
-            
-            <div class="tutorial-content">
-                <div class="tutorial-section">
-                    <h3>🏎️ مقدمة عن سباق السيارات</h3>
-                    <p>سباق السيارات لعبة سرعة وإثارة مناسبة للأطفال من عمر 3 سنوات. قد سيارتك وتجنب العوائق لأطول مسافة ممكنة!</p>
-                    
-                    <div class="interactive-demo">
-                        <h4>🛣️ عناصر اللعبة</h4>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
-                            <div style="text-align: center; padding: 15px; background: #ff0000; color: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">🚗</div>
-                                <strong>سيارتك</strong><br>
-                                <small>السيارة الحمراء التي تتحكم بها</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: #0000ff; color: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">🚙</div>
-                                <strong>العوائق</strong><br>
-                                <small>السيارات الزرقاء التي تجب تجنبها</small>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: #228B22; color: white; border-radius: 10px;">
-                                <div style="font-size: 2rem;">🛣️</div>
-                                <strong>الطريق</strong><br>
-                                <small>المسار الأخضر الذي تسير عليه</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>🎮 كيفية اللعب بالريموت كنترول</h3>
-                    <ol class="tutorial-steps">
-                        <li>السهم الأيسر: تحريك السيارة يساراً</li>
-                        <li>السهم الأيمن: تحريك السيارة يميناً</li>
-                        <li>زر الإيقاف: إيقاف اللعبة مؤقتاً</li>
-                        <li>زر OK: بدء اللعبة أو المتابعة</li>
-                        <li>زر Back: العودة للقائمة الرئيسية</li>
-                    </ol>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>💡 نصائح للأطفال</h3>
-                    <ol class="tutorial-steps">
-                        <li><strong>ابق في المنتصف:</strong> لا تذهب للأطراف كثيراً</li>
-                        <li><strong>انتبه للأمام:</strong> راقب السيارات القادمة</li>
-                        <li><strong>تحرك بسرعة:</strong> لا تتردد في التحرك</li>
-                        <li><strong>تدرب كثيراً:</strong> كلما لعبت أكثر، تحسنت</li>
-                        <li><strong>استمتع:</strong> الهدف هو المرح والتسلية!</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-    
-    <div class="footer">
-        <p>© 2025 - برمجة وتطوير محاسب أحمد مبروك</p>
-        <p>موقع ألعاب تعليمي احترافي - مع دروس شاملة ودعم كامل للتلفزيون الذكي والذكاء الاصطناعي</p>
-    </div>
-
-    <script>
-        // متغيرات عامة
-        let currentView = 'menu';
-        
-        // وظائف التنقل
-        function showMainMenu() {
-            // إخفاء جميع الدروس التعليمية
-            document.querySelectorAll('.tutorial-interface').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // إظهار القائمة الرئيسية
-            document.getElementById('main-menu').style.display = 'grid';
-            currentView = 'menu';
-        }
-        
-        function showTutorial(gameType) {
-            // إخفاء القائمة الرئيسية
-            document.getElementById('main-menu').style.display = 'none';
-            
-            // إخفاء جميع الدروس التعليمية
-            document.querySelectorAll('.tutorial-interface').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // إظهار الدرس المطلوب
-            const tutorialElement = document.getElementById(gameType + '-tutorial');
-            if (tutorialElement) {
-                tutorialElement.classList.add('active');
-                currentView = gameType + '-tutorial';
-            }
-        }
-        
-        // دعم التحكم عن بعد
-        document.addEventListener('keydown', function(e) {
-            switch(e.key) {
-                case 'Enter':
-                    if (currentView === 'menu') {
-                        const firstTutorialButton = document.querySelector('.tutorial-btn');
-                        if (firstTutorialButton) firstTutorialButton.click();
-                    }
-                    break;
-                case 'Escape':
-                case 'Home':
-                    if (currentView !== 'menu') {
-                        showMainMenu();
-                    }
-                    break;
-            }
-        });
-        
-        // تهيئة الموقع
-        document.addEventListener('DOMContentLoaded', function() {
-            showMainMenu();
-        });
-    </script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎮 موقع الألعاب التعليمي - محاسب أحمد مبروك 🎯</title>
+    <script type="module" crossorigin src="/assets/index-3j-8SdY9.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zYRxm6SQ.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
